@@ -1,0 +1,31 @@
+{
+  "name": "stackoverflow-lite",
+  "version": "1.0.0",
+  "description": "a minimal version of stackoverflow for local developers\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[\u001b[3~\u001b[C\u001b[C\u001b[C\u001b[Cinternal\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~ developers\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelNgiri/StackOverflow-Lite.git"
+  },
+  "keywords": [
+    "stackOverflow-Lite",
+    "lite",
+    "stackoverflow",
+    "andela",
+    "developer",
+    "challenge"
+  ],
+  "author": "Michael Ngiri",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michaelNgiri/StackOverflow-Lite/issues"
+  },
+  "homepage": "https://github.com/michaelNgiri/StackOverflow-Lite#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
