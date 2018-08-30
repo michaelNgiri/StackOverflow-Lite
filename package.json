@@ -1,11 +1,12 @@
 {
   "name": "stackoverflow-lite",
   "version": "1.0.0",
-  "description": "a minimal version of stackoverflow for local developers\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[\u001b[3~\u001b[C\u001b[C\u001b[C\u001b[Cinternal\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~ developers\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
+  "description": "a minimal version of stackoverflow for local developers[C\u001b[C\u001b[C\u001b[Cinternal\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~ developers\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "create-db": "node db/create_tables.js"
   },
   "repository": {
     "type": "git",

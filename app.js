@@ -2,20 +2,36 @@ var express = require('express');
 var app = express();
 var port = process.env.PORT || 3000;
 
+
 app.get('/', function (req, res) {
 	res.send("hi, this is StackOverflow Lite");
 });
 
+const users = [
+	{'id':1},
+	{'name':"myname"}
+];
 //Register a user 
-app.post('/auth/signup ', function (req, res) {
-   // res.send("hi there");
+app.post('/auth/signup', function (req, res) {
+    client.query(
+        `INSERT INTO users (name, link, email) VALUES ('')`,
+        (err, doc) => {
+            if (err) {
+                console.log(err);
+            } else {
+                done(null, {rows:[{name:profile.displayName,link:shortId,email:pro_email}]});
+            }
+        }
+    );
+    res.status(404).send('not today');
+    //res.send(users);
 });
 
 //Login a user 
 app.post('/auth/login', function (req, res) {
     res.send("hi there");
 });
-
+ 
 //Fetch all questions 
 app.get('/questions', function (req, res) {
 	res.send("StackOverflow Lite");
