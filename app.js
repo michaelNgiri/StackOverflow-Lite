@@ -1,11 +1,12 @@
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
-const path = require('path');
+//const path = require('path');
 
 const cookieParser = require('cookie-parser');
-
 app.use(cookieParser(process.env.COOKIE_SECRET));
+
+const jwt = require('jsonwebtoken');
 
 const bodyParser = require('body-parser');
 
@@ -84,18 +85,28 @@ app.post('/auth/login', function (req, res) {
                     console.log(dbPassword);
                     console.log('email exists, lets see if your password is correct');
 
+                    //compare password sent by user to one in db
                     const match = await bcrypt.compare(req.body.password, dbPassword);
-                    const secureCookie = req.app.get('env') !== 'development'
+                    //const secureCookie = req.app.get('env') !== 'development';
                     if(match){
                         //login the user
+
+                        //set cookies
                         res.cookie('your_cookie', email, {
                             httpOny:true,
                             signed:true,
-                            secure:secureCookie
+                            //secure:secureCookie
                         });
-                        res.json({
-                            message:"Login Successful"
-                        })
+                        const user = {
+                            email:email,
+                            password:dbPassword
+                        }
+                        jwt.sign({user}, 'secret_key', (err, token)=>{
+                            res.json({
+                               token
+                            });
+                        });
+
                     }else {
                         console.log('wrong password');
                     }
@@ -164,4 +175,22 @@ function userInfoIsValid(user){
         return true;
     }
     return false;
+}
+
+//verify token middleware
+function  verifyToken(req, res, next) {
+    //get request headers
+    const requestHeader = req.headers['authorization'];
+    //check if header has the request token
+    if(typeof requestHeader !== undefined){
+        //grant access to user
+        const  bearer = requestHeader.split(' ');
+        //get  the token
+        const requestToken = bearer[1];
+        req.token = requestToken;
+        next();
+    }else {
+        //restrict access if token is absent
+        res.sendStatus(403);
+    }
 }
