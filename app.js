@@ -1,30 +1,91 @@
-var express = require('express');
-var app = express();
-var port = process.env.PORT || 3000;
+const express = require('express');
+const app = express();
+var path = require('path');
+
+const bodyParser = require('body-parser');
 
 
-app.get('/', function (req, res) {
-	res.send("hi, this is StackOverflow Lite");
-});
 
-const users = [
-	{'id':1},
-	{'name':"myname"}
-];
+//configure body-parser for express
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
+
+const port = process.env.PORT || 3000;
+
+const Pool = require('pg').Pool;
+const config = {
+    host: 'localhost',
+    user: 'postgres',
+    password: 'password',
+    database: 'stack-lite',
+};
+const pool = new Pool(config);
+
+
+app.get('/index.html', function(req, res) {
+        res.sendFile(__dirname + "/" + "index.html");
+    });
+
+
 //Register a user 
 app.post('/auth/signup', function (req, res) {
-    client.query(
-        `INSERT INTO users (name, link, email) VALUES ('')`,
-        (err, doc) => {
-            if (err) {
-                console.log(err);
-            } else {
-                done(null, {rows:[{name:profile.displayName,link:shortId,email:pro_email}]});
-            }
+const email = req.body.email;
+
+
+    if (userInfoIsValid(req.body)){
+        console.log('valid info submitted');
+        // res.send('valid info submitted');
+        if(userExists(req.body)){
+            console.log('user exists');
+            res.send('user exists');
+        }else {
+            console.log('user does not exist');
+            res.send('user does not exist');
         }
-    );
-    res.status(404).send('not today');
-    //res.send(users);
+    }else {
+        console.log('invalid info submitted');
+        res.send('invalid info submitted');
+    }
+// const email = req.body.email;
+// console.log(email);
+//    	//check if info is valid
+// 	if (validUserInfo(req.body)) {
+// 	    console.log('lets query the db');
+//         (async () => {
+//             const client = await pool.connect()
+//             try {
+//                 const res = await client.query("SELECT * FROM users WHERE email = '" + email + "' ");
+//             } finally {
+//                 client.release()
+//             }
+//         })().catch(e => console.log(e.stack))
+// 	}else{
+// 		res.json('invalid user info supplied')
+	//}
+	// function registerUser(){
+	// 	var e;
+	// 	const fname = req.body.first_name;
+	// 	const lname = req.body.last_name;
+	// 	const password = req.body.password;
+	// 	let gender = req.body.gender;
+	// 	if (fname > 4) {
+	// 		 e = 'your first name is too short';
+	// 	}else if(lname > 4){
+	// 		 e = 'your last name is too short';
+	// 	}else if (password > 6) {
+	// 		 e = 'password is too short';
+	// }else{
+	// 	if (pool.query("INSERT INTO users(first_name, last_name, email) VALUES('"+fname+"', '"+lname+"', '"+email+"');");) {
+	// 		e = 'your account has succesfully been created';
+	// 	}else{
+	// 		e = 'failed to create your account at this point, try again later';
+	// 	}
+	// }
+	// }   
+	// registerUser();
+//res.send(result);
+   //res.status(200).send('hi');
+    // console.log(req.body.key);
 });
 
 //Login a user 
@@ -74,3 +135,22 @@ app.put('/questions/<questionId>/answers/<answerId>', function (req, res) {
 app.listen(port, function(err){
 	console.log('server started at port: ' + port);
 });
+
+
+
+
+function userInfoIsValid(user){
+    if (typeof user.email === "string" &&
+        user.email.trim() !== '' &&
+        typeof user.password === "string" &&
+        user.password.trim() !== '' &&
+        user.password.trim().length >= 5){
+        console.log(user.email);
+        console.log(user.password.trim());
+        return true;
+    }else {
+        return false;
+    }
+}
+
+
