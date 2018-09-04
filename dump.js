@@ -55,3 +55,30 @@ async function userExists(user) {
 // });
 // console.log(query);
 // return query != null;
+
+
+
+
+
+
+login queries
+        (async () => {
+
+            const { rows } = await pool.query("SELECT password FROM users WHERE email = '"+email+"' ")
+
+            if ({ rows }.length < 1) {
+
+                console.log('this email is not registered');
+
+            }else {
+                const dbPassword = rows[0].password;
+
+                console.log(dbPassword);
+
+                console.log(result);
+                console.log('email exists, lets see if your password is correct');
+                // bcrypt.compare(req.body.password, result.password).then(function (result) {
+                //     console.log(result);
+                // });
+            }
+        })()
