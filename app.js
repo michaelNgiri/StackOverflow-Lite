@@ -29,19 +29,27 @@ app.get('/index.html', function(req, res) {
 
 //Register a user 
 app.post('/auth/signup', function (req, res) {
-const email = req.body.email;
+let msg = '';
 
 
     if (userInfoIsValid(req.body)){
         console.log('valid info submitted');
-        // res.send('valid info submitted');
-        if(userExists(req.body)){
-            console.log('user exists');
-            res.send('user exists');
-        }else {
-            console.log('user does not exist');
-            res.send('user does not exist');
-        }
+        let userInfo = req.body;
+        const firstName = userInfo.first_name;
+        const lastName = userInfo.last_name;
+        const email = userInfo.email;
+        const password = userInfo.password;
+        pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], function (err, result) {
+            console.log(result.rows.length);
+            if(result.rows.length<1){
+                pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+password+"');", function(err, queryResult) {
+                    console.log(queryResult);
+        res.send('registration successful')
+                });
+            }else {
+        res.send('email in use');
+            }
+        });
     }else {
         console.log('invalid info submitted');
         res.send('invalid info submitted');
@@ -153,4 +161,7 @@ function userInfoIsValid(user){
     }
 }
 
+async function registerUser(userInfo){
 
+
+}
