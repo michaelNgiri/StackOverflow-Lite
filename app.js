@@ -29,9 +29,7 @@ app.get('/index.html', function(req, res) {
 
 //Register a user 
 app.post('/auth/signup', function (req, res) {
-let msg = '';
-
-
+    //call the function for validating user inputs
     if (userInfoIsValid(req.body)){
         console.log('valid info submitted');
         let userInfo = req.body;
@@ -39,61 +37,25 @@ let msg = '';
         const lastName = userInfo.last_name;
         const email = userInfo.email;
         const password = userInfo.password;
+        //check if the email supplied exists in database
         pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], function (err, result) {
             console.log(result.rows.length);
             if(result.rows.length<1){
+                //insert the user to database if not already registered
                 pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+password+"');", function(err, queryResult) {
                     console.log(queryResult);
-        res.send('registration successful')
+                     res.send('registration successful')
                 });
             }else {
+         //give a feedback to the user if email is already in use
         res.send('email in use');
             }
         });
     }else {
+        //feedback to the user if the information supplied is invalid
         console.log('invalid info submitted');
         res.send('invalid info submitted');
     }
-// const email = req.body.email;
-// console.log(email);
-//    	//check if info is valid
-// 	if (validUserInfo(req.body)) {
-// 	    console.log('lets query the db');
-//         (async () => {
-//             const client = await pool.connect()
-//             try {
-//                 const res = await client.query("SELECT * FROM users WHERE email = '" + email + "' ");
-//             } finally {
-//                 client.release()
-//             }
-//         })().catch(e => console.log(e.stack))
-// 	}else{
-// 		res.json('invalid user info supplied')
-	//}
-	// function registerUser(){
-	// 	var e;
-	// 	const fname = req.body.first_name;
-	// 	const lname = req.body.last_name;
-	// 	const password = req.body.password;
-	// 	let gender = req.body.gender;
-	// 	if (fname > 4) {
-	// 		 e = 'your first name is too short';
-	// 	}else if(lname > 4){
-	// 		 e = 'your last name is too short';
-	// 	}else if (password > 6) {
-	// 		 e = 'password is too short';
-	// }else{
-	// 	if (pool.query("INSERT INTO users(first_name, last_name, email) VALUES('"+fname+"', '"+lname+"', '"+email+"');");) {
-	// 		e = 'your account has succesfully been created';
-	// 	}else{
-	// 		e = 'failed to create your account at this point, try again later';
-	// 	}
-	// }
-	// }   
-	// registerUser();
-//res.send(result);
-   //res.status(200).send('hi');
-    // console.log(req.body.key);
 });
 
 //Login a user 
@@ -152,16 +114,10 @@ function userInfoIsValid(user){
         user.email.trim() !== '' &&
         typeof user.password === "string" &&
         user.password.trim() !== '' &&
-        user.password.trim().length >= 5){
+        user.password.trim().length >= 5) {
         console.log(user.email);
         console.log(user.password.trim());
         return true;
-    }else {
-        return false;
     }
-}
-
-async function registerUser(userInfo){
-
-
+    return false;
 }
