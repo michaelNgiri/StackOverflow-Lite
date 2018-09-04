@@ -3,6 +3,10 @@ const app = express();
 const bcrypt = require('bcrypt');
 const path = require('path');
 
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
 const bodyParser = require('body-parser');
 
 
@@ -81,8 +85,17 @@ app.post('/auth/login', function (req, res) {
                     console.log('email exists, lets see if your password is correct');
 
                     const match = await bcrypt.compare(req.body.password, dbPassword);
+                    const secureCookie = req.app.get('env') !== 'development'
                     if(match){
-                        console.log('your passwrd is correct')
+                        //login the user
+                        res.cookie('your_cookie', email, {
+                            httpOny:true,
+                            signed:true,
+                            secure:secureCookie
+                        });
+                        res.json({
+                            message:"Login Successful"
+                        })
                     }else {
                         console.log('wrong password');
                     }
