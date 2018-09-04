@@ -64,7 +64,27 @@ app.post('/auth/signup', function (req, res) {
 
 //Login a user 
 app.post('/auth/login', function (req, res) {
-    res.send("hi there");
+    const email = req.body.email;
+    console.log(email);
+    if (userInfoIsValid(req.body)) {
+        pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], function (err, result) {
+            console.log(result.rows.length);
+            if (result.rows.length < 1) {
+                console.log('this email is not registered');
+
+            }else {
+                (async () => {
+                    const { rows } = await pool.query("SELECT password FROM users WHERE email = '"+email+"' ")
+                    const dbPassword = rows[0].password;
+                    console.log('password in db is:')
+                    console.log(dbPassword);
+                    console.log('email exists, lets see if your password is correct');
+                })()
+            }
+        });
+    }else {
+        res.send('um! the information you entered does not seem to be correct, please check and try again');
+    }
 });
  
 //Fetch all questions 
