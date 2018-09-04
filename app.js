@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-var path = require('path');
+const bcrypt = require('bcrypt');
+const path = require('path');
 
 const bodyParser = require('body-parser');
 
@@ -41,11 +42,14 @@ app.post('/auth/signup', function (req, res) {
         pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], function (err, result) {
             console.log(result.rows.length);
             if(result.rows.length<1){
+            bcrypt.hash(password, 8).then(function (hashedPassword) {
                 //insert the user to database if not already registered
-                pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+password+"');", function(err, queryResult) {
+                pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');", function(err, queryResult) {
                     console.log(queryResult);
-                     res.send('registration successful')
+                    res.send('registration successful')
                 });
+                });
+
             }else {
          //give a feedback to the user if email is already in use
         res.send('email in use');
