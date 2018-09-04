@@ -76,9 +76,16 @@ app.post('/auth/login', function (req, res) {
                 (async () => {
                     const { rows } = await pool.query("SELECT password FROM users WHERE email = '"+email+"' ")
                     const dbPassword = rows[0].password;
-                    console.log('password in db is:')
+                    console.log('password in db is:');
                     console.log(dbPassword);
                     console.log('email exists, lets see if your password is correct');
+
+                    const match = await bcrypt.compare(req.body.password, dbPassword);
+                    if(match){
+                        console.log('your passwrd is correct')
+                    }else {
+                        console.log('wrong password');
+                    }
                 })()
             }
         });
@@ -139,8 +146,8 @@ function userInfoIsValid(user){
         typeof user.password === "string" &&
         user.password.trim() !== '' &&
         user.password.trim().length >= 5) {
-        console.log(user.email);
-        console.log(user.password.trim());
+        // console.log(user.email);
+        // console.log(user.password.trim());
         return true;
     }
     return false;
