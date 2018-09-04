@@ -7,18 +7,14 @@ var config = {
 };
 
 var pool = new Pool(config);
-async function setup_database(){
-	//var response = await pool.query("select * from users");
-	pool.query("CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, name TEXT, link TEXT, email TEXT);");
-	console.log("successful");
-}
+async function setup_database() {
+    pool.query("CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY NOT NULL, first_name VARCHAR(30), last_name VARCHAR(30), email VARCHAR(50) UNIQUE NOT NULL, username VARCHAR(30), password VARCHAR(256), role INTEGER, created_at TIMESTAMP, deleted_at TIMESTAMP);");
+    pool.query("CREATE TABLE IF NOT EXISTS questions(id SERIAL PRIMARY KEY, created_at TIMESTAMP, user_id INTEGER, closed_at TIMESTAMP,  deleted_at TIMESTAMP, repo_link TEXT, question_title TEXT, question_body TEXT, keywords VARCHAR);");
+    pool.query("CREATE TABLE IF NOT EXISTS answers(id SERIAL PRIMARY KEY, user_id INTEGER, created_at TIMESTAMP, deleted_at TIMESTAMP, selected_at TIMESTAMP, repo_link VARCHAR, linked_question_id INTEGER, answer_text VARCHAR);");
+    pool.query("CREATE TABLE IF NOT EXISTS upvotes(id SERIAL PRIMARY KEY, created_at TIMESTAMP, deleted_at TIMESTAMP, user_id INTEGER, comment VARCHAR);");
+    pool.query("CREATE TABLE IF NOT EXISTS downvotes(id SERIAL PRIMARY KEY, created_at TIMESTAMP, deleted_at TIMESTAMP, user_id INTEGER, comment VARCHAR);");
+   }
 
-// async function insert_a_user(){
-// 	//var response = await pool.query("select * from users");
-// 	pool.query("INSERT INTO users(id SERIAL PRIMARY KEY, name TEXT, link TEXT, email TEXT);");
-// 	pool.query("CREATE TABLE IF NOT EXISTS questions(id SERIAL PRIMARY KEY, created_at TIMESTAMP,  updated_at TIMESTAMP, link TEXT, senderId TEXT, sendermsg TEXT, senderName TEXT, receiverId TEXT);");
-// 	pool.query("CREATE TABLE IF NOT EXISTS answers(id SERIAL PRIMARY KEY, created_at TIMESTAMP, updated_at TIMESTAMP, link TEXT, senderId TEXT, sendermsg TEXT, senderName TEXT, receiverId TEXT)");
-// 	console.log("successful");
-// }
-
-setup_database();
+setup_database()
+    .then(console.log('successfully created databases'))
+    .catch('failed to create database');
