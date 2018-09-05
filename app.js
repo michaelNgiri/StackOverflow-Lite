@@ -89,27 +89,25 @@ app.post('/auth/login', function (req, res) {
                     if(match){
                         console.log('password is correct lets log you in');
                         //login the user
-
+                        const user = {
+                            email:email,
+                        };
                         //set cookies
                         res.cookie('your_cookie', email, {
                             httpOny:true,
                             //signed:true,
                             //secure:secureCookie
                         });
-                        const user = {
-                            email:email,
-                            password:dbPassword
-                        };
                         jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
                             // res.headers({
                             //    Authorization:token
                             // });
                             res.json({
                                 status:200,
-                                message: "success, you are logged in"
+                                message: "success, you are logged in",
+                                Authorization:token
                             })
                         });
-
                     }else {
                         console.log('wrong password');
                     }
@@ -124,7 +122,7 @@ app.post('/auth/login', function (req, res) {
 //Fetch all questions 
 app.get('/questions', verifyToken, function (req, res) {
     console.log(req.token);
-    jwt.verify(req.token, 'secretkey', (err, user)=>{
+    jwt.verify(req.token, 'secret_key', (err, user)=>{
         if(err){
             console.log(err);
             res.status(403).json({
@@ -135,6 +133,10 @@ app.get('/questions', verifyToken, function (req, res) {
             res.send("StackOverflow Lite");
         }
     });
+});
+
+app.get('/', (req, res)=>{
+    res.sendStatus(200);
 });
 
 //Fetch a specific  question 
