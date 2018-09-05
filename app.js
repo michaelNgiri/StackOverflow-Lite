@@ -213,7 +213,7 @@ app.post('/questions', verifyToken, (req, res)=>{
 //Delete a question
 //This endpoint should be available to  the author of the question. 
 app.delete('/questions/:questionId', function (req, res) {
-const questionId = 1;
+const questionId = req.body.question_id;
     pool.query("DELETE FROM questions where id = '"+questionId+"' ", [],function(err,result) {
         if(err){
             console.log(err);
