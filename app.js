@@ -130,7 +130,7 @@ app.post('/auth/login', function (req, res) {
  
 //Fetch all questions 
 app.get('/questions', verifyToken, function (req, res) {
-    console.log(req.token);
+   
     res.send("StackOverflow Lite");
 });
 
