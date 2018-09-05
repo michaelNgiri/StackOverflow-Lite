@@ -144,15 +144,47 @@ app.get('/', (req, res)=>{
 
 //Fetch a specific  question 
 //This should come with all the  answers  provided so far for the question. 
-app.get('/questions/:questionId', function (req, res) {
+app.get('/questions/:questionId', (req, res)=>{
     //const questionId = req.body.questionId
-   let questionId =1;
+    let questionAnswers = [];
+   let questionId=1;
     (async () => {
+        //check if the question with that id exists in database
         const { rows } = await pool.query("SELECT * FROM questions where id = '"+questionId+"' ");
-        const result = rows;
-        res.json(result);
-    })()
+        const question = rows[0];
+        console.log(question);
+        //console.log(question.length)
+        if (rows.length < 1 || rows.length === undefined) {
+
+            res.status(404).json({
+                status:404,
+                msg:'the question does not exist'
+            });
+            console.log('the question does not exist');
+        }else {
+            //retrieve answers if question exists
+            console.log('the question exists, lets see if it has answers');
+            (async () => {
+                const { rows } = await pool.query("SELECT * FROM answers where linked_question_id = '"+questionId+"' ");
+
+                if (rows.length < 1 || rows.length === undefined) {
+                    console.log('no answer yet');
+                 questionAnswers = 'no answer yet';
+                }else {
+                questionAnswers = rows[0];
+                }
+                res.status(200).json({
+                    status:200,
+                    question:question,
+                    answers:questionAnswers
+                })
+            })()
+        }
+
+    })();
 });
+
+
 
 //Post a question 
 app.post('/questions', verifyToken, function (req, res) {
