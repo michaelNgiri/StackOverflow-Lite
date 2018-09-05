@@ -77,13 +77,15 @@ app.post('/auth/login', function (req, res) {
 
             }else {
                 (async () => {
-                    const { rows } = await pool.query("SELECT password FROM users WHERE email = '"+email+"' ")
+                    const { rows } = await pool.query("SELECT password, id FROM users WHERE email = '"+email+"' ");
                     const dbPassword = rows[0].password;
+                    const id = rows[0].id;
                     console.log('password in db is:');
+                    // console.log();
                     console.log(dbPassword);
                     console.log('email exists, lets see if your password is correct');
 
-                    //compare password sent by user to one in db
+                    //compare password sent by user with one in db
                     const match = await bcrypt.compare(req.body.password, dbPassword);
                     //const secureCookie = req.app.get('env') !== 'development';
                     if(match){
@@ -91,6 +93,7 @@ app.post('/auth/login', function (req, res) {
                         //login the user
                         const user = {
                             email:email,
+                            id:id
                         };
 
                         jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
@@ -106,7 +109,8 @@ app.post('/auth/login', function (req, res) {
                             res.json({
                                 status:200,
                                 message: "success, you are logged in",
-                                Authorization:token
+                                Authorization:token,
+                                id:id
                             })
                         });
                     }else {
@@ -130,8 +134,7 @@ app.post('/auth/login', function (req, res) {
  
 //Fetch all questions 
 app.get('/questions', verifyToken, function (req, res) {
-   
-    res.send("StackOverflow Lite");
+       res.send("StackOverflow Lite");
 });
 
 app.get('/', (req, res)=>{
@@ -145,8 +148,22 @@ app.get('/questions/<questionId>', function (req, res) {
 });
 
 //Post a question 
-app.post('/questions', function (req, res) {
-    res.send("hi there");
+app.post('/questions', verifyToken, function (req, res) {
+    const qTitle = req.body.question_title;
+    const question = req.body.question;
+    //const email = req.body.email;
+
+    pool.query("INSERT INTO users(user_id, question_title, question_body) VALUES('"+id+"', '"+qTitle+"', '"+question+"');", [], function (err, result) {
+        console.log(result.rows.length);
+        if (result.rows.length < 1) {
+            console.log('this email is not registered');
+
+        }else {
+            res.status(500).json({
+                status:500,
+                msg:'an error occurred while saving your question, try later'
+            });
+        }
 });
 
 //Delete a question
@@ -157,7 +174,7 @@ app.delete('/questions/<questionId>', function (req, res) {
 
 //Post an answer to  a question
 app.post('/questions/<questionId>/answers', function (req, res) {
-    res.send("hi there");
+
 });
 
 //Mark an answer as  accepted or  update an answer.
