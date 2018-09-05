@@ -32,9 +32,9 @@ app.get('/index.html', function(req, res) {
 
 
 //Register a user 
-app.post('/auth/signup', function (req, res) {
+app.post('/auth/signup', function(req, res) {
     //call the function for validating user inputs
-    if (userInfoIsValid(req.body)){
+    if(userInfoIsValid(req.body)){
         console.log('valid info submitted');
         let userInfo = req.body;
         const firstName = userInfo.first_name;
@@ -149,21 +149,7 @@ app.get('/questions/<questionId>', function (req, res) {
 
 //Post a question 
 app.post('/questions', verifyToken, function (req, res) {
-    const qTitle = req.body.question_title;
-    const question = req.body.question;
-    //const email = req.body.email;
-
-    pool.query("INSERT INTO users(user_id, question_title, question_body) VALUES('"+id+"', '"+qTitle+"', '"+question+"');", [], function (err, result) {
-        console.log(result.rows.length);
-        if (result.rows.length < 1) {
-            console.log('this email is not registered');
-
-        }else {
-            res.status(500).json({
-                status:500,
-                msg:'an error occurred while saving your question, try later'
-            });
-        }
+    
 });
 
 //Delete a question
@@ -242,3 +228,4 @@ function  verifyToken(req, res, next) {
     }
 }
 
+//
