@@ -4,7 +4,7 @@
   "description": "a minimal version of stackoverflow for local developers[C\u001b[C\u001b[C\u001b[Cinternal\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~ developers\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node node_modules/jasmine/bin/jasmine.js",
     "start": "node app.js",
     "setup": "node setup.js",
     "test-init": "./node_modules/jasmine/bin/jasmine.js init"
@@ -36,6 +36,7 @@
     "cookie-parser": "^1.4.3",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
+    "jasmine": "^3.2.0",
     "jsonwebtoken": "^8.3.0",
     "pg": "^7.4.3",
     "pg-promise": "^5.9.7"
