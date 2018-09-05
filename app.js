@@ -10,8 +10,6 @@ const jwt = require('jsonwebtoken');
 
 const bodyParser = require('body-parser');
 
-
-
 //configure body-parser for express
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -89,22 +87,27 @@ app.post('/auth/login', function (req, res) {
                     const match = await bcrypt.compare(req.body.password, dbPassword);
                     //const secureCookie = req.app.get('env') !== 'development';
                     if(match){
+                        console.log('password is correct lets log you in');
                         //login the user
 
                         //set cookies
                         res.cookie('your_cookie', email, {
                             httpOny:true,
-                            signed:true,
+                            //signed:true,
                             //secure:secureCookie
                         });
                         const user = {
                             email:email,
                             password:dbPassword
-                        }
-                        jwt.sign({user}, 'secret_key', (err, token)=>{
+                        };
+                        jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
+                            // res.headers({
+                            //    Authorization:token
+                            // });
                             res.json({
-                               token
-                            });
+                                status:200,
+                                message: "success, you are logged in"
+                            })
                         });
 
                     }else {
@@ -114,13 +117,24 @@ app.post('/auth/login', function (req, res) {
             }
         });
     }else {
-        res.send('um! the information you entered does not seem to be correct, please check and try again');
+        res.send('invalid login details, try again');
     }
 });
  
 //Fetch all questions 
 app.get('/questions', verifyToken, function (req, res) {
-	res.send("StackOverflow Lite");
+    console.log(req.token);
+    jwt.verify(req.token, 'secretkey', (err, user)=>{
+        if(err){
+            console.log(err);
+            res.status(403).json({
+                status:403,
+                msg:"forbidden, you do not have authorization to access this url"
+            });
+        }else {
+            res.send("StackOverflow Lite");
+        }
+    });
 });
 
 //Fetch a specific  question 
@@ -174,6 +188,7 @@ function userInfoIsValid(user){
         // console.log(user.password.trim());
         return true;
     }
+    console.log(user);
     return false;
 }
 
@@ -181,8 +196,10 @@ function userInfoIsValid(user){
 function  verifyToken(req, res, next) {
     //get request headers
     const requestHeader = req.headers['authorization'];
+    console.log('this is the token below:');
+    console.log(requestHeader);
     //check if header has the request token
-    if(typeof requestHeader !== undefined){
+    if(requestHeader !== undefined){
         //grant access to user
         const  bearer = requestHeader.split(' ');
         //get  the token
@@ -191,6 +208,6 @@ function  verifyToken(req, res, next) {
         next();
     }else {
         //restrict access if token is absent
-        res.sendStatus(403);
+        res.status(403).send('you are not allowed to access this url');
     }
 }
