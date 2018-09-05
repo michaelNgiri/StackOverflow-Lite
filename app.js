@@ -92,13 +92,14 @@ app.post('/auth/login', function (req, res) {
                         const user = {
                             email:email,
                         };
-                        //set cookies
-                        res.cookie('your_cookie', email, {
-                            httpOny:true,
-                            //signed:true,
-                            //secure:secureCookie
-                        });
+
                         jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
+                            //set cookies
+                            res.cookie( 'Authorization', token, {
+                                httpOny:true,
+                                //signed:true,
+                                //secure:secureCookie
+                            });
                             // res.headers({
                             //    Authorization:token
                             // });
@@ -109,30 +110,28 @@ app.post('/auth/login', function (req, res) {
                             })
                         });
                     }else {
-                        console.log('wrong password');
+                        //return authentication failure error
+                        res.status(401).json({
+                            status: 401,
+                            msg: 'wrong password'
+                        });
                     }
                 })()
             }
         });
     }else {
-        res.send('invalid login details, try again');
+        //return authentication failure error
+        res.status(401).json({
+            status: 401,
+            msg: 'invalid login details, try again'
+        });
     }
 });
  
 //Fetch all questions 
 app.get('/questions', verifyToken, function (req, res) {
     console.log(req.token);
-    jwt.verify(req.token, 'secret_key', (err, user)=>{
-        if(err){
-            console.log(err);
-            res.status(403).json({
-                status:403,
-                msg:"forbidden, you do not have authorization to access this url"
-            });
-        }else {
-            res.send("StackOverflow Lite");
-        }
-    });
+    res.send("StackOverflow Lite");
 });
 
 app.get('/', (req, res)=>{
@@ -207,9 +206,22 @@ function  verifyToken(req, res, next) {
         //get  the token
         const requestToken = bearer[1];
         req.token = requestToken;
-        next();
+
+        jwt.verify(req.token, 'secret_key', (err, user)=>{
+            if(err){
+                console.log(err);
+                res.status(403).json({
+                    status:403,
+                    msg:"forbidden, you do not have authorization to access this url"
+                });
+            }else {
+                next();
+            }
+        });
+
     }else {
         //restrict access if token is absent
         res.status(403).send('you are not allowed to access this url');
     }
 }
+
