@@ -149,7 +149,26 @@ app.get('/questions/<questionId>', function (req, res) {
 
 //Post a question 
 app.post('/questions', verifyToken, function (req, res) {
-    
+    const qTitle = req.body.question_title;
+    const question = req.body.question;
+    let id = 1;
+    //const email = req.body.email;
+
+    pool.query("INSERT INTO questions(user_id, question_title, question_body) VALUES('"+id+"', '"+qTitle+"', '"+question+"');", [],function(err,result) {
+        if(err){
+            console.log(err);
+            console.log('could not save question');
+            res.status(400).json({
+                status:400,
+                msg:"could not save your question, try later"
+            });
+        }
+        res.status(200).json({
+            status: 200,
+            //result:result.rows
+        });
+    });
+
 });
 
 //Delete a question
