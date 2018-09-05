@@ -144,8 +144,14 @@ app.get('/', (req, res)=>{
 
 //Fetch a specific  question 
 //This should come with all the  answers  provided so far for the question. 
-app.get('/questions/<questionId>', function (req, res) {
-	res.send("StackOverflow Lite");
+app.get('/questions/:questionId', function (req, res) {
+    //const questionId = req.body.questionId
+   let questionId =1;
+    (async () => {
+        const { rows } = await pool.query("SELECT * FROM questions where id = '"+questionId+"' ");
+        const result = rows;
+        res.json(result);
+    })()
 });
 
 //Post a question 
