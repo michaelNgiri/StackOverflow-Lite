@@ -187,7 +187,7 @@ app.get('/questions/:questionId', (req, res)=>{
 
 
 //Post a question 
-app.post('/questions', verifyToken, function (req, res) {
+app.post('/questions', verifyToken, (req, res)=>{
     const qTitle = req.body.question_title;
     const question = req.body.question;
     const id = req.body.id;
@@ -212,8 +212,18 @@ app.post('/questions', verifyToken, function (req, res) {
 
 //Delete a question
 //This endpoint should be available to  the author of the question. 
-app.delete('/questions/<questionId>', function (req, res) {
-	res.send("StackOverflow Lite");
+app.delete('/questions/:questionId', function (req, res) {
+const questionId = 1;
+    pool.query("DELETE FROM questions where id = '"+questionId+"' ", [],function(err,result) {
+        if(err){
+            console.log(err);
+            res.status(400).json({
+                status:400,
+                msg:'cant delete, the question does not exist'
+            });
+        }
+        res.status(200).send('question deleted');
+    });
 });
 
 //Post an answer to  a question
