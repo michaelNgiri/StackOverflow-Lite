@@ -80,9 +80,6 @@ app.post('/auth/login', function (req, res) {
                     const { rows } = await pool.query("SELECT password, id FROM users WHERE email = '"+email+"' ");
                     const dbPassword = rows[0].password;
                     const id = rows[0].id;
-                    console.log('password in db is:');
-                    // console.log();
-                    console.log(dbPassword);
                     console.log('email exists, lets see if your password is correct');
 
                     //compare password sent by user with one in db
@@ -133,8 +130,12 @@ app.post('/auth/login', function (req, res) {
 });
  
 //Fetch all questions 
-app.get('/questions', verifyToken, function (req, res) {
-       res.send("StackOverflow Lite");
+app.get('/questions', function (req, res) {
+    (async () => {
+        const { rows } = await pool.query("SELECT * FROM questions");
+        const result = rows;
+        res.json(result);
+    })()
 });
 
 app.get('/', (req, res)=>{
@@ -151,7 +152,7 @@ app.get('/questions/<questionId>', function (req, res) {
 app.post('/questions', verifyToken, function (req, res) {
     const qTitle = req.body.question_title;
     const question = req.body.question;
-    let id = 1;
+    const id = req.body.id;
     //const email = req.body.email;
 
     pool.query("INSERT INTO questions(user_id, question_title, question_body) VALUES('"+id+"', '"+qTitle+"', '"+question+"');", [],function(err,result) {
@@ -220,7 +221,6 @@ function  verifyToken(req, res, next) {
     //get request headers
     const requestHeader = req.headers['authorization'];
     console.log('this is the token below:');
-    console.log(requestHeader);
     //check if header has the request token
     if(requestHeader !== undefined){
         //grant access to user
