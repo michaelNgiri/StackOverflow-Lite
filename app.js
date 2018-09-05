@@ -95,7 +95,8 @@ app.post('/auth/login', function (req, res) {
 
                         jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
                             //set cookies
-                            res.cookie( 'Authorization', token, {
+                            const authToken = "bearer"+" "+token;
+                            res.cookie( 'Authorization',authToken, {
                                 httpOny:true,
                                 //signed:true,
                                 //secure:secureCookie
@@ -106,7 +107,7 @@ app.post('/auth/login', function (req, res) {
                             res.json({
                                 status:200,
                                 message: "success, you are logged in",
-                                Authorization:token,
+                                Authorization:authToken,
                                 id:id
                             })
                         });
@@ -214,7 +215,7 @@ app.post('/questions', verifyToken, (req, res)=>{
 //This endpoint should be available to  the author of the question. 
 app.delete('/questions/:questionId', function (req, res) {
 const questionId = req.body.question_id;
-    pool.query("DELETE FROM questions where id = '"+questionId+"' ", [],function(err,result) {
+    pool.query("DELETE FROM questions where id = '"+questionId+"' ", [],(err,result)=>{
         if(err){
             console.log(err);
             res.status(400).json({
@@ -227,8 +228,39 @@ const questionId = req.body.question_id;
 });
 
 //Post an answer to  a question
-app.post('/questions/<questionId>/answers', function (req, res) {
+app.post('/questions/:questionId/answers', verifyToken, (req, res)=>{
+    const questionId = req.body.question_id;
+    const answer = req.body.answer;
+    const userId = req.body.user_id;
+    (async () => {
+        //check if the question with that id exists in database before saving an answer to it
+        const { rows } = await pool.query("SELECT * FROM questions where id = '"+questionId+"' ");
+        const question = rows[0];
+        console.log(question);
+        //console.log(question.length)
+        if (rows.length < 1 || rows.length === undefined) {
 
+            res.status(404).json({
+                status:404,
+                msg:'the question does not exist'
+            });
+            console.log('the question does not exist');
+        }else {
+            //save the answer if question exists
+            console.log('the question exists, lets save your answer');
+            pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text) VALUES('"+userId+"', '"+questionId+"', '"+answer+"');", [],(err,result)=>{
+                if(err){
+                    console.log(err);
+                    res.status(400).json({
+                        status:400,
+                        msg:'unable to save your answer, try again later'
+                    });
+                }
+                res.status(200).send('answer saved');
+            });
+        }
+
+    })();
 });
 
 //Mark an answer as  accepted or  update an answer.
@@ -238,16 +270,6 @@ app.post('/questions/<questionId>/answers', function (req, res) {
 app.put('/questions/<questionId>/answers/<answerId>', function (req, res) {
     res.send("hi there");
 });
-
-
-
-//app.use(express.static(public));
-
-app.listen(port, function(err){
-	console.log('server started at port: ' + port);
-});
-
-
 
 
 function userInfoIsValid(user){
@@ -296,3 +318,8 @@ function  verifyToken(req, res, next) {
 }
 
 //
+//app.use(express.static(public));
+
+app.listen(port, function(err){
+    console.log('server started at port: ' + port);
+});
