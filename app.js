@@ -155,7 +155,7 @@ app.get('/questions', function (req, res) {
     (async () => {
         const { rows } = await pool.query("SELECT * FROM questions");
         const result = rows;
-        res.json(result);
+        res.status(200).json(result);
     })()
 });
 
