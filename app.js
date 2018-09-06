@@ -311,39 +311,12 @@ app.put('/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
 
         }
     });
-//     (async () => {
-//         //check if the question with that id exists in database before saving an answer to it
-//         const { rows } = await pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ");
-//         const question = rows[0];
-//         console.log(question);
-//         //////
-//         //console.log(question.length)
-//         // if (rows.length < 1 || rows.length === undefined) {
-//         //
-//         //     res.status(404).json({
-//         //         status:404,
-//         //         msg:'the question does not exist'
-//         //     });
-//         //     console.log('the question does not exist');
-//         // }else {
-//         //  //////////////////////////   //save the answer if question exists
-//         //     console.log('the question exists, lets look for the answer');
-//         //     pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text) VALUES('"+userId+"', '"+questionId+"', '"+answer+"');", [],(err,result)=>{
-//         //         if(err){
-//         //             console.log(err);
-//         //             res.status(400).json({
-//         //                 status:400,
-//         //                 msg:'unable to save your answer, try again later'
-//         //             });
-//         //         }
-//         //         res.status(200).send('answer saved');
-//         //     });
-//         // }
-// /////////
-//     })();
 
 });
 
+app.get('/upvote/:answerId', function(req, res) {
+
+});
 
 function userInfoIsValid(user){
     if (typeof user.email === "string" &&
