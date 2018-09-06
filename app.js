@@ -26,9 +26,20 @@ const config = {
 const pool = new Pool(config);
 
 
+
+app.get('/', (req, res)=>{
+    console.log(req.headers);
+    res.send(req.headers);
+});
+
+
+
 app.get('/index.html', function(req, res) {
         res.sendFile(__dirname + "/" + "index.html");
     });
+
+
+
 
 
 //Register a user 
@@ -64,6 +75,9 @@ app.post('/auth/signup', function(req, res) {
         res.send('invalid info submitted');
     }
 });
+
+
+
 
 //Login a user 
 app.post('/auth/login', function (req, res) {
@@ -139,17 +153,18 @@ app.get('/questions', function (req, res) {
     })()
 });
 
-app.get('/', (req, res)=>{
-    console.log(req.headers);
-    res.send(req.headers);
-});
+
+
+
+
+
 
 //Fetch a specific  question 
 //This should come with all the  answers  provided so far for the question. 
 app.get('/questions/:questionId', (req, res)=>{
     //const questionId = req.body.questionId
     let questionAnswers = [];
-   let questionId=1;
+   let questionId=req.body.question_id;
     (async () => {
         //check if the question with that id exists in database
         const { rows } = await pool.query("SELECT * FROM questions where id = '"+questionId+"' ");
@@ -188,12 +203,14 @@ app.get('/questions/:questionId', (req, res)=>{
 
 
 
+
+
+
 //Post a question 
 app.post('/questions', verifyToken, (req, res)=>{
     const qTitle = req.body.question_title;
     const question = req.body.question;
     const id = req.body.id;
-    //const email = req.body.email;
 
     pool.query("INSERT INTO questions(user_id, question_title, question_body) VALUES('"+id+"', '"+qTitle+"', '"+question+"');", [],function(err,result) {
         if(err){
@@ -212,6 +229,10 @@ app.post('/questions', verifyToken, (req, res)=>{
 
 });
 
+
+
+
+
 //Delete a question
 //This endpoint should be available to  the author of the question. 
 app.delete('/questions/:questionId', function (req, res) {
@@ -227,6 +248,10 @@ const questionId = req.body.question_id;
         res.status(200).send('question deleted');
     });
 });
+
+
+
+
 
 //Post an answer to  a question
 app.post('/questions/:questionId/answers', verifyToken, (req, res)=>{
@@ -264,14 +289,16 @@ app.post('/questions/:questionId/answers', verifyToken, (req, res)=>{
     })();
 });
 
+
+
 //Mark an answer as  accepted or  update an answer.
 //This endpoint should be available to  only the answer author and question 
 // author. The answer author calls the  route to
 // update answer while the  question author calls the route to  accept answer.
 app.put('/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
-    const questionId = 2; //req.body.question_id;
-    const answerId = 1; //req.body.answer_id;
-    const userId = 1; //req.body.user_id;
+    const questionId = req.body.question_id;
+    const answerId = req.body.answer_id;
+    const userId = req.body.user_id;
     const time =  new Date().toLocaleString();
     console.log('lets check for the requested question');
     pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ", [],function(err,result) {
@@ -311,37 +338,6 @@ app.put('/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
 
         }
     });
-//     (async () => {
-//         //check if the question with that id exists in database before saving an answer to it
-//         const { rows } = await pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ");
-//         const question = rows[0];
-//         console.log(question);
-//         //////
-//         //console.log(question.length)
-//         // if (rows.length < 1 || rows.length === undefined) {
-//         //
-//         //     res.status(404).json({
-//         //         status:404,
-//         //         msg:'the question does not exist'
-//         //     });
-//         //     console.log('the question does not exist');
-//         // }else {
-//         //  //////////////////////////   //save the answer if question exists
-//         //     console.log('the question exists, lets look for the answer');
-//         //     pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text) VALUES('"+userId+"', '"+questionId+"', '"+answer+"');", [],(err,result)=>{
-//         //         if(err){
-//         //             console.log(err);
-//         //             res.status(400).json({
-//         //                 status:400,
-//         //                 msg:'unable to save your answer, try again later'
-//         //             });
-//         //         }
-//         //         res.status(200).send('answer saved');
-//         //     });
-//         // }
-// /////////
-//     })();
-
 });
 
 
