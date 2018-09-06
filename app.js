@@ -140,7 +140,8 @@ app.get('/questions', function (req, res) {
 });
 
 app.get('/', (req, res)=>{
-    res.sendStatus(200);
+    console.log(req.headers);
+    res.send(req.headers);
 });
 
 //Fetch a specific  question 
@@ -267,8 +268,80 @@ app.post('/questions/:questionId/answers', verifyToken, (req, res)=>{
 //This endpoint should be available to  only the answer author and question 
 // author. The answer author calls the  route to
 // update answer while the  question author calls the route to  accept answer.
-app.put('/questions/<questionId>/answers/<answerId>', function (req, res) {
-    res.send("hi there");
+app.put('/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
+    const questionId = 2; //req.body.question_id;
+    const answerId = 1; //req.body.answer_id;
+    const userId = 1; //req.body.user_id;
+    const time =  new Date().toLocaleString();
+    console.log('lets check for the requested question');
+    pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ", [],function(err,result) {
+        if(err){
+            console.log(err);
+            console.log('could not find the question');
+            res.status(400).json({
+                status:400,
+                msg:"could not find the question, try later"
+            });
+        }else {
+            console.log(result);
+            //mark answer as accepted
+            if(result['rows'][0]['user_id'] === userId){
+                pool.query("UPDATE answers SET selected_at = '"+time+"' where id = '"+answerId+"' ", [],function(err,result) {
+                    if(err) {
+                        console.log(err);
+                        console.log('action failed');
+                        res.status(400).json({
+                            status: 400,
+                            msg: "could not complete the requested action, try later"
+                        });
+                    }else {
+                        console.log('action completed');
+                        res.status(200).json({
+                            status: 200,
+                            msg: "succesful!"
+                        });
+                    }
+                }); //end function to mark answer as selected
+
+                console.log(result['rows'][0]['user_id']);
+
+            }else {
+                res.status(401).send('access denied');
+            }
+
+        }
+    });
+//     (async () => {
+//         //check if the question with that id exists in database before saving an answer to it
+//         const { rows } = await pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ");
+//         const question = rows[0];
+//         console.log(question);
+//         //////
+//         //console.log(question.length)
+//         // if (rows.length < 1 || rows.length === undefined) {
+//         //
+//         //     res.status(404).json({
+//         //         status:404,
+//         //         msg:'the question does not exist'
+//         //     });
+//         //     console.log('the question does not exist');
+//         // }else {
+//         //  //////////////////////////   //save the answer if question exists
+//         //     console.log('the question exists, lets look for the answer');
+//         //     pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text) VALUES('"+userId+"', '"+questionId+"', '"+answer+"');", [],(err,result)=>{
+//         //         if(err){
+//         //             console.log(err);
+//         //             res.status(400).json({
+//         //                 status:400,
+//         //                 msg:'unable to save your answer, try again later'
+//         //             });
+//         //         }
+//         //         res.status(200).send('answer saved');
+//         //     });
+//         // }
+// /////////
+//     })();
+
 });
 
 
@@ -290,7 +363,6 @@ function userInfoIsValid(user){
 function  verifyToken(req, res, next) {
     //get request headers
     const requestHeader = req.headers['authorization'];
-    console.log('this is the token below:');
     //check if header has the request token
     if(requestHeader !== undefined){
         //grant access to user
@@ -301,17 +373,20 @@ function  verifyToken(req, res, next) {
 
         jwt.verify(req.token, 'secret_key', (err, user)=>{
             if(err){
-                console.log(err);
+                console.log('token verification failed');
+                //console.log(err);
                 res.status(403).json({
                     status:403,
                     msg:"forbidden, you do not have authorization to access this url"
                 });
             }else {
+                console.log('token verified, access granted');
                 next();
             }
         });
 
     }else {
+        console.log('request token missing');
         //restrict access if token is absent
         res.status(403).send('you are not allowed to access this url');
     }
