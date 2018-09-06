@@ -14,7 +14,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 7000;
 
 const Pool = require('pg').Pool;
 const config = {
@@ -34,7 +34,7 @@ app.get('/', (req, res)=>{
 
 
 
-app.get('/index.html', function(req, res) {
+app.get('/index.html', (req, res)=>{
         res.sendFile(__dirname + "/" + "index.html");
     });
 
@@ -43,7 +43,7 @@ app.get('/index.html', function(req, res) {
 
 
 //Register a user 
-app.post('/auth/signup', function(req, res) {
+app.post('/auth/signup',(req, res)=>{
     //res.sendStatus(200);
     //call the function for validating user inputs
     if(userInfoIsValid(req.body)){
@@ -55,13 +55,13 @@ app.post('/auth/signup', function(req, res) {
         const password = userInfo.password;
         console.log('check if the email supplied exists in database');
         //check if the email supplied exists in database
-        pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], function (err, result) {
+        pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], (err, result)=>{
             console.log(result.rows.length);
             if(result.rows.length<1){
-            bcrypt.hash(password, 8).then(function (hashedPassword) {
+            bcrypt.hash(password, 8).then((hashedPassword)=>{
                 //insert the user to database if not already registered
                 console.log('insert the user to database if not already registered');
-                pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');", function(err, queryResult) {
+                pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');", (err, queryResult)=>{
                     console.log(queryResult);
                     res.status(200).send('registration successful');
                     console.log('registration successful')
@@ -86,11 +86,11 @@ app.post('/auth/signup', function(req, res) {
 
 
 //Login a user 
-app.post('/auth/login', function (req, res) {
+app.post('/auth/login', (req, res)=>{
     const email = req.body.email;
     console.log(email);
     if (userInfoIsValid(req.body)) {
-        pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], function (err, result) {
+        pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], (err, result)=>{
             console.log(result.rows.length);
             if (result.rows.length < 1) {
                 console.log('this email is not registered');
@@ -151,7 +151,7 @@ app.post('/auth/login', function (req, res) {
 });
  
 //Fetch all questions 
-app.get('/questions', function (req, res) {
+app.get('/questions', (req, res)=>{
     (async () => {
         const { rows } = await pool.query("SELECT * FROM questions");
         const result = rows;
@@ -218,7 +218,7 @@ app.post('/questions', verifyToken, (req, res)=>{
     const question = req.body.question;
     const id = req.body.id;
 
-    pool.query("INSERT INTO questions(user_id, question_title, question_body) VALUES('"+id+"', '"+qTitle+"', '"+question+"');", [],function(err,result) {
+    pool.query("INSERT INTO questions(user_id, question_title, question_body) VALUES('"+id+"', '"+qTitle+"', '"+question+"');", [],(err,result)=>{
         if(err){
             console.log(err);
             console.log('could not save question');
@@ -241,7 +241,7 @@ app.post('/questions', verifyToken, (req, res)=>{
 
 //Delete a question
 //This endpoint should be available to  the author of the question. 
-app.delete('/questions/:questionId', function (req, res) {
+app.delete('/questions/:questionId', (req, res)=>{
 const questionId = req.body.question_id;
     pool.query("DELETE FROM questions where id = '"+questionId+"' ", [],(err,result)=>{
         if(err){
@@ -307,7 +307,7 @@ app.put('/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
     const userId = req.body.user_id;
     const time =  new Date().toLocaleString();
     console.log('lets check for the requested question');
-    pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ", [],function(err,result) {
+    pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ", [],(err,result)=>{
         if(err){
             console.log(err);
             console.log('could not find the question');
@@ -319,7 +319,7 @@ app.put('/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
             console.log(result);
             //mark answer as accepted
             if(result['rows'][0]['user_id'] === userId){
-                pool.query("UPDATE answers SET selected_at = '"+time+"' where id = '"+answerId+"' ", [],function(err,result) {
+                pool.query("UPDATE answers SET selected_at = '"+time+"' where id = '"+answerId+"' ", [], (err,result)=>{
                     if(err) {
                         console.log(err);
                         console.log('action failed');
@@ -352,7 +352,7 @@ app.post('/upvote/:answerId', verifyToken, (req, res)=>{
     const answerId = req.body.answer_id;
     const time =  new Date().toLocaleString();
 
-        pool.query("INSERT INTO upvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+time+"'); ", [],function(err,result) {
+        pool.query("INSERT INTO upvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+time+"'); ", [], (err,result)=>{
             if(err) {
                 console.log(err);
                 console.log('action failed');
@@ -379,7 +379,7 @@ app.post('/downvote/:answerId', verifyToken, (req, res)=>{
     const answerId = 1;//req.body.answer_id;
     const time =  new Date().toLocaleString();
 
-    pool.query("INSERT INTO downvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+time+"'); ", [],function(err,result) {
+    pool.query("INSERT INTO downvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+time+"'); ", [],(err,result)=>{
         if(err) {
             console.log(err);
             console.log('action failed');
@@ -448,6 +448,6 @@ function  verifyToken(req, res, next) {
 //
 //app.use(express.static(public));
 
-app.listen(port, function(err){
+app.listen(port, (err)=>{
     console.log('server started at port: ' + port);
 });
