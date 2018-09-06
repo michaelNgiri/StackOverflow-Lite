@@ -95,7 +95,7 @@ app.post('/auth/login', function (req, res) {
 
                         jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
                             //set cookies
-                            const authToken = "bearer"+" "+token;
+                            const authToken = token;
                             res.cookie( 'Authorization',authToken, {
                                 httpOny:true,
                                 //signed:true,
@@ -314,7 +314,7 @@ app.put('/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
 
 });
 
-app.get('/upvote/:answerId', (req, res)=>{
+app.get('/upvote/:answerId', verifyToken, (req, res)=>{
     const userId = 1;// req.body.user_id;
     const answerId = 1;//req.body.answer_id;
     const time =  new Date().toLocaleString();
@@ -355,15 +355,15 @@ function userInfoIsValid(user){
 //verify token middleware
 function  verifyToken(req, res, next) {
     //get request headers
+    console.log(req.headers);
     const requestHeader = req.headers['authorization'];
     //check if header has the request token
     if(requestHeader !== undefined){
         //grant access to user
         const  bearer = requestHeader.split(' ');
         //get  the token
-        const requestToken = bearer[1];
-        req.token = requestToken;
-
+        req.token = bearer[1];
+        console.log(req.token);
         jwt.verify(req.token, 'secret_key', (err, user)=>{
             if(err){
                 console.log('token verification failed');
