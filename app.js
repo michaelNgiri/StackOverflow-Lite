@@ -448,6 +448,64 @@ function  verifyToken(req, res, next) {
 //
 //app.use(express.static(public));
 
+app.use('/api', totoro.rain({
+    v1: {
+        endpoints: [
+            {
+                route: "/auth/signup",
+                method: "POST",
+                implementation: routes.authRoutes.oAuth
+            },
+            {
+                route: "/auth/login",
+                method: "POST",
+                implementation: routes.authRoutes.oAuth
+            },
+            {
+                route: "/questions",
+                method: "GET",
+                implementation: routes.authRoutes.requestRoutes
+            },
+            {
+            	route:"/questions/:questionId",
+                method: "GET",
+                implementation: routes.authRoutes.requestRoutes
+            },
+            {
+                route: "/questions",
+                method: "POST",
+                implementation: routes.authRoutes.requestRoutes
+            },
+            {
+                route: "/questions/:questionId",
+                method: "DELETE",
+                implementation: routes.authRoutes.requestRoutes
+            },
+            {
+                route: "/questions/:questionId/answers",
+                method: "POST",
+                implementation: routes.authRoutes.requestRoutes
+            },
+            {
+                route: "/questions/:questionId/answers/:answerId",
+                method: "PUT",
+                implementation: routes.authRoutes.requestRoutes
+            },
+            {
+                route: "/upvote/:answerId",
+                method: "PUT",
+                implementation: routes.authRoutes.requestRoutes
+            },
+            {
+                route: "/downvote/:answerId",
+                method: "POST",
+                implementation: routes.authRoutes.requestRoutes
+            },
+        ]
+    }
+}))
+
+
 app.listen(port, function(err){
     console.log('server started at port: ' + port);
 });
