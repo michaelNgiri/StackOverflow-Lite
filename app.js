@@ -29,7 +29,7 @@ const pool = new Pool(config);
 
 app.get('/', (req, res)=>{
     console.log(req.headers);
-    res.send(req.headers);
+    res.status(200).send(req.headers);
 });
 
 
@@ -44,6 +44,7 @@ app.get('/index.html', function(req, res) {
 
 //Register a user 
 app.post('/auth/signup', function(req, res) {
+    //res.sendStatus(200);
     //call the function for validating user inputs
     if(userInfoIsValid(req.body)){
         console.log('valid info submitted');
@@ -52,27 +53,32 @@ app.post('/auth/signup', function(req, res) {
         const lastName = userInfo.last_name;
         const email = userInfo.email;
         const password = userInfo.password;
+        console.log('check if the email supplied exists in database');
         //check if the email supplied exists in database
         pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], function (err, result) {
             console.log(result.rows.length);
             if(result.rows.length<1){
             bcrypt.hash(password, 8).then(function (hashedPassword) {
                 //insert the user to database if not already registered
+                console.log('insert the user to database if not already registered');
                 pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');", function(err, queryResult) {
                     console.log(queryResult);
-                    res.send('registration successful')
+                    res.status(200).send('registration successful');
+                    console.log('registration successful')
                 });
                 });
 
             }else {
+                console.log('email already registered');
          //give a feedback to the user if email is already in use
-        res.send('email in use');
+        res.status(409).send('email in use');
             }
         });
     }else {
         //feedback to the user if the information supplied is invalid
         console.log('invalid info submitted');
-        res.send('invalid info submitted');
+        console.log('send a 500 code');
+        res.status(418).send('invalid info submitted');
     }
 });
 
