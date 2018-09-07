@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
-const totoro = require('totoro-node');
 //const path = require('path');
 
 const cookieParser = require('cookie-parser');
