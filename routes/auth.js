@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 
+
+
 const Pool = require('pg').Pool;
 const config = {
     host: 'localhost',
