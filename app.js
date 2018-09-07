@@ -10,9 +10,11 @@ const jwt = require('jsonwebtoken');
 
 const bodyParser = require('body-parser');
 
+const authRoute = require('./routes/auth');
 //configure body-parser for express
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+app.use('/api/v1/auth', authRoute);
 
 const port = process.env.PORT || 7000;
 
@@ -27,14 +29,16 @@ const pool = new Pool(config);
 
 
 
-app.get('/', (req, res)=>{
+app.get('/api/v1/', (req, res)=>{
     console.log(req.headers);
     res.status(200).send(req.headers);
 });
 
 
 
-app.get('/index.html', (req, res)=>{
+
+app.get('/api/v1/index.html', (req, res)=>{
+	 versioning
         res.sendFile(__dirname + "/" + "index.html");
     });
 
@@ -162,12 +166,14 @@ app.get('/questions', (req, res)=>{
 
 
 
+=======
+>>>>>>> versioning
 
 
 
 //Fetch a specific  question 
 //This should come with all the  answers  provided so far for the question. 
-app.get('/questions/:questionId', (req, res)=>{
+app.get('/api/v1/questions/:questionId', (req, res)=>{
     //const questionId = req.body.questionId
     let questionAnswers = [];
    let questionId=req.body.question_id;
@@ -208,12 +214,18 @@ app.get('/questions/:questionId', (req, res)=>{
 });
 
 
-
-
+//fetch all questions
+app.get('/api/v1/questions', (req, res)=>{
+    (async () => {
+        const { rows } = await pool.query("SELECT * FROM questions");
+        const result = rows;
+        res.status(200).json(result);
+    })()
+});
 
 
 //Post a question 
-app.post('/questions', verifyToken, (req, res)=>{
+app.post('/api/v1/questions', verifyToken, (req, res)=>{
     const qTitle = req.body.question_title;
     const question = req.body.question;
     const id = req.body.id;
@@ -241,7 +253,7 @@ app.post('/questions', verifyToken, (req, res)=>{
 
 //Delete a question
 //This endpoint should be available to  the author of the question. 
-app.delete('/questions/:questionId', (req, res)=>{
+app.delete('/api/v1/questions/:questionId', (req, res)=>{
 const questionId = req.body.question_id;
     pool.query("DELETE FROM questions where id = '"+questionId+"' ", [],(err,result)=>{
         if(err){
@@ -260,7 +272,7 @@ const questionId = req.body.question_id;
 
 
 //Post an answer to  a question
-app.post('/questions/:questionId/answers', verifyToken, (req, res)=>{
+app.post('/api/v1/questions/:questionId/answers', verifyToken, (req, res)=>{
     const questionId = req.body.question_id;
     const answer = req.body.answer;
     const userId = req.body.user_id;
@@ -301,7 +313,7 @@ app.post('/questions/:questionId/answers', verifyToken, (req, res)=>{
 //This endpoint should be available to  only the answer author and question 
 // author. The answer author calls the  route to
 // update answer while the  question author calls the route to  accept answer.
-app.put('/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
+app.put('/api/v1/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
     const questionId = req.body.question_id;
     const answerId = req.body.answer_id;
     const userId = req.body.user_id;
@@ -347,7 +359,7 @@ app.put('/questions/:questionId/answers/:answerId', verifyToken, (req, res)=>{
 
 });
 
-app.post('/upvote/:answerId', verifyToken, (req, res)=>{
+app.post('/api/v1/upvote/:answerId', verifyToken, (req, res)=>{
     const userId =  req.body.user_id;
     const answerId = req.body.answer_id;
     const time =  new Date().toLocaleString();
@@ -374,7 +386,7 @@ app.post('/upvote/:answerId', verifyToken, (req, res)=>{
 
 
 //downvoting of answers
-app.post('/downvote/:answerId', verifyToken, (req, res)=>{
+app.post('/api/v1/downvote/:answerId', verifyToken, (req, res)=>{
     const userId = 1;// req.body.user_id;
     const answerId = 1;//req.body.answer_id;
     const time =  new Date().toLocaleString();
@@ -451,3 +463,4 @@ function  verifyToken(req, res, next) {
 app.listen(port, (err)=>{
     console.log('server started at port: ' + port);
 });
+

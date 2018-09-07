@@ -1,10 +1,11 @@
-var Pool = require('pg').Pool;
-var config = {
+const Pool = require('pg').Pool;
+const config = {
     host: 'localhost',
     user: 'postgres',
     password: 'password',
     database: 'stack-lite',
 };
+const pool = new Pool(config);
 
 
 
