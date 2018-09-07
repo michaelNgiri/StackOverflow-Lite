@@ -173,3 +173,14 @@ login queries
 
 
     });
+
+
+    const router = express.Router();
+    router.use(function(req, res, next){
+        res._json = res.json;
+        res.json = function json(obj){
+            obj.APIversion = 1;
+            res._json(obj);
+        };
+        next();
+    }); 

@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
+const totoro = require('totoro-node');
 //const path = require('path');
 
 const cookieParser = require('cookie-parser');
@@ -14,7 +15,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 9000;
 
 const Pool = require('pg').Pool;
 const config = {
@@ -454,58 +455,62 @@ app.use('/api', totoro.rain({
             {
                 route: "/auth/signup",
                 method: "POST",
-                implementation: routes.authRoutes.oAuth
+                implementation: version
             },
             {
                 route: "/auth/login",
                 method: "POST",
-                implementation: routes.authRoutes.oAuth
+                implementation: version
             },
             {
                 route: "/questions",
                 method: "GET",
-                implementation: routes.authRoutes.requestRoutes
+                implementation: version
             },
             {
             	route:"/questions/:questionId",
                 method: "GET",
-                implementation: routes.authRoutes.requestRoutes
+                implementation: version
             },
             {
                 route: "/questions",
                 method: "POST",
-                implementation: routes.authRoutes.requestRoutes
+                implementation: version
             },
             {
                 route: "/questions/:questionId",
                 method: "DELETE",
-                implementation: routes.authRoutes.requestRoutes
+                implementation: version
             },
             {
                 route: "/questions/:questionId/answers",
                 method: "POST",
-                implementation: routes.authRoutes.requestRoutes
+                implementation: version
             },
             {
                 route: "/questions/:questionId/answers/:answerId",
                 method: "PUT",
-                implementation: routes.authRoutes.requestRoutes
+                implementation: version
             },
             {
                 route: "/upvote/:answerId",
                 method: "PUT",
-                implementation: routes.authRoutes.requestRoutes
+                implementation: version
             },
             {
                 route: "/downvote/:answerId",
                 method: "POST",
-                implementation: routes.authRoutes.requestRoutes
+                implementation: version
             },
         ]
     }
-}))
+}));
 
+function version(v1, req, res, next) {
+res.send('hi');
+}
 
 app.listen(port, function(err){
     console.log('server started at port: ' + port);
 });
+
