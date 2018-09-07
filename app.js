@@ -91,8 +91,14 @@ app.get('/api/v1/questions/:questionId', (req, res)=>{
 });
 
 
-
-
+//fetch all questions
+app.get('/api/v1/questions', function (req, res) {
+    (async () => {
+        const { rows } = await pool.query("SELECT * FROM questions");
+        const result = rows;
+        res.status(200).json(result);
+    })()
+});
 
 
 //Post a question 
