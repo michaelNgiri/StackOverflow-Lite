@@ -230,7 +230,7 @@ app.put('/api/v1/questions/:questionId/answers/:answerId', verifyToken, (req, re
 
 });
 
-app.post('/upvote/:answerId', verifyToken, (req, res)=>{
+app.post('/api/v1/upvote/:answerId', verifyToken, (req, res)=>{
     const userId =  req.body.user_id;
     const answerId = req.body.answer_id;
     const time =  new Date().toLocaleString();
@@ -257,7 +257,7 @@ app.post('/upvote/:answerId', verifyToken, (req, res)=>{
 
 
 //downvoting of answers
-app.post('/downvote/:answerId', verifyToken, (req, res)=>{
+app.post('/api/v1/downvote/:answerId', verifyToken, (req, res)=>{
     const userId = 1;// req.body.user_id;
     const answerId = 1;//req.body.answer_id;
     const time =  new Date().toLocaleString();
