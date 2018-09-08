@@ -233,12 +233,14 @@ app.get('/api/v1/questions', (req, res)=>{
 
 //Post a question 
 app.post('/api/v1/questions', verifyToken, (req, res)=>{
+	console.log('request received, lets try and save your question');
     const qTitle = req.body.question_title;
     const question = req.body.question;
     const id = req.body.id;
     const timestamp =  new Date().toLocaleString();
+    console.log(req.body);
 
-    pool.query("INSERT INTO questions(user_id, question_title, question_body, created_at) VALUES('"+id+"', '"+qTitle+"', '"+question+"', '"+timestamp+"');", [],(err,result)=>{
+    pool.query("INSERT INTO questions(user_id, question_title, question_body, created_at) VALUES('"+id+"', '"+qTitle+"', '"+question+"', '"+timestamp+"');",(err,result)=>{
         if(err){
             console.log(err);
             console.log('could not save question');
@@ -256,7 +258,6 @@ app.post('/api/v1/questions', verifyToken, (req, res)=>{
     });
 
 });
-
 
 
 
