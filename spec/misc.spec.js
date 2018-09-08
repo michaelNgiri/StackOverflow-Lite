@@ -1,6 +1,6 @@
 const Request = require('request');
 require('dotenv').config()
-const url = 'https://dev-pool.herokuapp.com';
+const url = process.env.SITE_URL;
 const port = process.env.PORT || 3000;
 
 describe("Upvoting of an answer", ()=>{
