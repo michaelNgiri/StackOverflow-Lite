@@ -5,8 +5,12 @@
   "main": "app.js",
   "scripts": {
     "test": "node node_modules/jasmine/bin/jasmine.js",
-    "start": "node app.js",
+    "start": "babel-node app.js",
     "setup": "node setup.js",
+    "clean": "rm -rf build && mkdir build",
+    "build-babel": "babel -d ./build ./src -s",
+    "build": "npm run clean && npm run build-babel",
+    "start": "npm run build && node ./build/app.js",
     "test-init": "./node_modules/jasmine/bin/jasmine.js init"
   },
   "repository": {
@@ -28,6 +32,7 @@
   },
   "homepage": "https://github.com/michaelNgiri/StackOverflow-Lite#readme",
   "dependencies": {
+    "babel-preset-env": "^1.7.0",
     "bcrypt": "^3.0.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
@@ -47,5 +52,8 @@
   },
   "engines": {
     "node": "5.*.*"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0"
   }
 }
