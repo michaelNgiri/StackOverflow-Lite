@@ -55,7 +55,7 @@ app.post('/auth/signup',(req, res)=>{
     //call the function for validating user inputs
     if(userInfoIsValid(req.body)){
         console.log('valid info submitted');
-        let userInfo = req.body;
+        const userInfo = req.body;
         const firstName = userInfo.first_name;
         const lastName = userInfo.last_name;
         const email = userInfo.email;
@@ -176,7 +176,7 @@ app.get('/questions', (req, res)=>{
 app.get('/api/v1/questions/:questionId', (req, res)=>{
     //const questionId = req.body.questionId
     let questionAnswers = [];
-   let questionId=req.body.question_id;
+   const questionId=req.body.question_id;
     (async () => {
         //check if the question with that id exists in database
         const { rows } = await pool.query("SELECT * FROM questions where id = '"+questionId+"' ");
