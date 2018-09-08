@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
 require('dotenv').config()
-var Pool = require('pg').Pool;
-var config = {
+const Pool = require('pg').Pool;
+const config = {
 	host: process.env.DB_HOST,
 	user: process.env.DB_USERNAME,
 	password: process.env.DB_PASSWORD,

@@ -1,13 +1,13 @@
 require('dotenv').config()
-var Pool = require('pg').Pool;
-var config = {
+const Pool = require('pg').Pool;
+const config = {
 	host: process.env.DB_HOST,
 	user: process.env.DB_USERNAME,
 	password: process.env.DB_PASSWORD,
 	database: process.env.DB_NAME,
 };
 
-var pool = new Pool(config);
+const pool = new Pool(config);
 async function setup_database() {
     pool.query("CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY NOT NULL, first_name VARCHAR(30), last_name VARCHAR(30), email VARCHAR(50) UNIQUE NOT NULL, username VARCHAR(30), password VARCHAR(256), role INTEGER, created_at TIMESTAMP, deleted_at TIMESTAMP);");
     pool.query("CREATE TABLE IF NOT EXISTS questions(id SERIAL PRIMARY KEY, created_at TIMESTAMP, user_id INTEGER, closed_at TIMESTAMP,  deleted_at TIMESTAMP, repo_link TEXT, question_title TEXT, question_body TEXT, keywords VARCHAR);");

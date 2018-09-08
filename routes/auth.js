@@ -3,16 +3,16 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-
-
+require('dotenv').config()
 
 const Pool = require('pg').Pool;
 const config = {
-    host: 'localhost',
-    user: 'postgres',
-    password: 'password',
-    database: 'stack-lite',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
 };
+
 const pool = new Pool(config);
 
 
