@@ -4,10 +4,10 @@ const bcrypt = require('bcrypt');
 require('dotenv').config()
 const Pool = require('pg').Pool;
 const config = {
-	host: process.env.DB_HOST,
-	user: process.env.DB_USERNAME,
-	password: process.env.DB_PASSWORD,
-	database: process.env.DB_NAME,
+    host: 'localhost',
+    user: 'postgres',
+    password: 'password',
+    database: 'stack-lite',
 };
 
 const port = process.env.PORT || 3000;
@@ -47,7 +47,7 @@ app.get('/api/v1/index.html', (req, res)=>{
 
  
 //Fetch all questions 
-app.get('/questions', (req, res)=>{
+app.get('api/v1/questions', (req, res)=>{
     (async () => {
         const { rows } = await pool.query("SELECT * FROM questions");
         const result = rows;
@@ -55,9 +55,11 @@ app.get('/questions', (req, res)=>{
     })()
 });
 
-app.get('/questions/recent', (req, res)=>{
-    (async () => {
-        const { rows } = await pool.query("SELECT * FROM questions WHERE timestamp = (SELECT MAX(timestamp)  FROM questions)");
+app.get('/api/v1/questions/recent', (req, res)=>{
+    (async () => { 
+    	console.log('fetching the latest question');
+        const { rows } = await pool.query("select * from questions where id != 0 order by created_at desc limit 3");
+        console.log(rows);
         const result = rows;
         res.status(200).json(result);
     })()
