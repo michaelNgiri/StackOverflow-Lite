@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use('/api/v1/auth', authRoute);
 
-const port = process.env.PORT || 7000;
+const port = process.env.PORT || 3000;
 
 const Pool = require('pg').Pool;
 const config = {
@@ -167,10 +167,6 @@ app.get('/questions', (req, res)=>{
 
 
 
-=======
->>>>>>> versioning
-
-
 
 //Fetch a specific  question 
 //This should come with all the  answers  provided so far for the question. 
@@ -232,7 +228,7 @@ app.post('/api/v1/questions', verifyToken, (req, res)=>{
     const id = req.body.id;
     const timestamp =  new Date().toLocaleString();
 
-    pool.query("INSERT INTO questions(user_id, question_title, question_body, created_at) VALUES('"+id+"', '"+qTitle+"', '"+question+"', '"created_at"');", [],(err,result)=>{
+    pool.query("INSERT INTO questions(user_id, question_title, question_body, created_at) VALUES('"+id+"', '"+qTitle+"', '"+question+"', '"+timestamp+"');", [],(err,result)=>{
         if(err){
             console.log(err);
             console.log('could not save question');
