@@ -98,8 +98,8 @@ router.post('/signup', function(req, res) {
         console.log('check if the email supplied exists in database');
         //check if the email supplied exists in database
         pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], function (err, result) {
-            console.log(result.rows.length);
-            if(result.rows.length<1){
+            //console.log(result.rows.length);
+            if(result.rows.length<1 || result.rows.length === undefined){
                 bcrypt.hash(password, 8).then(function (hashedPassword) {
                     //insert the user to database if not already registered
                     console.log('insert the user to database if not already registered');

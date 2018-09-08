@@ -41,7 +41,6 @@ app.get('/api/v1/', (req, res)=>{
 
 
 app.get('/api/v1/index.html', (req, res)=>{
-	 versioning
         res.sendFile(__dirname + "/" + "index.html");
     });
 
@@ -162,6 +161,14 @@ app.post('/auth/login', (req, res)=>{
 app.get('/questions', (req, res)=>{
     (async () => {
         const { rows } = await pool.query("SELECT * FROM questions");
+        const result = rows;
+        res.status(200).json(result);
+    })()
+});
+
+app.get('/questions/recent', (req, res)=>{
+    (async () => {
+        const { rows } = await pool.query("SELECT * FROM questions WHERE timestamp = (SELECT MAX(timestamp)  FROM questions)");
         const result = rows;
         res.status(200).json(result);
     })()
