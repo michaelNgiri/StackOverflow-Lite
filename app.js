@@ -1,6 +1,18 @@
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
+require('dotenv').config()
+var Pool = require('pg').Pool;
+var config = {
+	host: process.env.DB_HOST,
+	user: process.env.DB_USERNAME,
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_NAME,
+};
+
+const port = process.env.PORT || 3000;
+
+const pool = new Pool(config);
 //const path = require('path');
 
 const cookieParser = require('cookie-parser');
@@ -16,16 +28,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use('/api/v1/auth', authRoute);
 
-const port = process.env.PORT || 3000;
 
-const Pool = require('pg').Pool;
-const config = {
-    host: 'localhost',
-    user: 'postgres',
-    password: 'password',
-    database: 'stack-lite',
-};
-const pool = new Pool(config);
 
 
 
