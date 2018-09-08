@@ -20,3 +20,6 @@ async function setup_database() {
 setup_database()
     .then(console.log('successfully created databases'))
     .catch('failed to create database');
+
+
+    console.log('http://localhost:'+port+'/api/v1/auth/signup');
