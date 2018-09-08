@@ -24,6 +24,10 @@ router.post('/login', function (req, res) {
         pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], function (err, result) {
             console.log(result.rows.length);
             if (result.rows.length < 1) {
+                res.status(401).json({
+                            status: 401,
+                            msg: 'this email is not registered'
+                        });
                 console.log('this email is not registered');
 
             }else {
