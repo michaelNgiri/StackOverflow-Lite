@@ -102,7 +102,7 @@ app.post('/auth/login', (req, res)=>{
             if (result.rows.length < 1) {
                 console.log('this email is not registered');
                 //return authentication failure error
-                        res.status(401).json({
+            res.status(401).json({
                             status: 401,
                             msg: 'this email is not registered'
                         });
