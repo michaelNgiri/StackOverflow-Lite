@@ -1,6 +1,18 @@
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
+require('dotenv').config()
+const Pool = require('pg').Pool;
+const config = {
+	host: process.env.DB_HOST,
+	user: process.env.DB_USERNAME,
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_NAME,
+};
+
+const port = process.env.PORT || 3000;
+
+const pool = new Pool(config);
 //const path = require('path');
 
 const cookieParser = require('cookie-parser');
@@ -16,16 +28,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use('/api/v1/auth', authRoute);
 
-const port = process.env.PORT || 7000;
 
-const Pool = require('pg').Pool;
-const config = {
-    host: 'localhost',
-    user: 'postgres',
-    password: 'password',
-    database: 'stack-lite',
-};
-const pool = new Pool(config);
 
 
 
@@ -38,7 +41,6 @@ app.get('/api/v1/', (req, res)=>{
 
 
 app.get('/api/v1/index.html', (req, res)=>{
-	 versioning
         res.sendFile(__dirname + "/" + "index.html");
     });
 
@@ -52,11 +54,12 @@ app.post('/auth/signup',(req, res)=>{
     //call the function for validating user inputs
     if(userInfoIsValid(req.body)){
         console.log('valid info submitted');
-        let userInfo = req.body;
+        const userInfo = req.body;
         const firstName = userInfo.first_name;
         const lastName = userInfo.last_name;
         const email = userInfo.email;
         const password = userInfo.password;
+        const timestamp =  new Date().toLocaleString();
         console.log('check if the email supplied exists in database');
         //check if the email supplied exists in database
         pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], (err, result)=>{
@@ -65,7 +68,7 @@ app.post('/auth/signup',(req, res)=>{
             bcrypt.hash(password, 8).then((hashedPassword)=>{
                 //insert the user to database if not already registered
                 console.log('insert the user to database if not already registered');
-                pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');", (err, queryResult)=>{
+                pool.query("INSERT INTO users(first_name, last_name, email, password, created_at) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"', '"+timestamp+"');", (err, queryResult)=>{
                     console.log(queryResult);
                     res.status(200).send('registration successful');
                     console.log('registration successful')
@@ -163,11 +166,15 @@ app.get('/questions', (req, res)=>{
     })()
 });
 
+app.get('/questions/recent', (req, res)=>{
+    (async () => {
+        const { rows } = await pool.query("SELECT * FROM questions WHERE timestamp = (SELECT MAX(timestamp)  FROM questions)");
+        const result = rows;
+        res.status(200).json(result);
+    })()
+});
 
 
-
-=======
->>>>>>> versioning
 
 
 
@@ -176,7 +183,7 @@ app.get('/questions', (req, res)=>{
 app.get('/api/v1/questions/:questionId', (req, res)=>{
     //const questionId = req.body.questionId
     let questionAnswers = [];
-   let questionId=req.body.question_id;
+   const questionId=req.body.question_id;
     (async () => {
         //check if the question with that id exists in database
         const { rows } = await pool.query("SELECT * FROM questions where id = '"+questionId+"' ");
@@ -229,8 +236,9 @@ app.post('/api/v1/questions', verifyToken, (req, res)=>{
     const qTitle = req.body.question_title;
     const question = req.body.question;
     const id = req.body.id;
+    const timestamp =  new Date().toLocaleString();
 
-    pool.query("INSERT INTO questions(user_id, question_title, question_body) VALUES('"+id+"', '"+qTitle+"', '"+question+"');", [],(err,result)=>{
+    pool.query("INSERT INTO questions(user_id, question_title, question_body, created_at) VALUES('"+id+"', '"+qTitle+"', '"+question+"', '"+timestamp+"');", [],(err,result)=>{
         if(err){
             console.log(err);
             console.log('could not save question');
@@ -276,6 +284,7 @@ app.post('/api/v1/questions/:questionId/answers', verifyToken, (req, res)=>{
     const questionId = req.body.question_id;
     const answer = req.body.answer;
     const userId = req.body.user_id;
+    const timestamp =  new Date().toLocaleString();
     (async () => {
         //check if the question with that id exists in database before saving an answer to it
         const { rows } = await pool.query("SELECT * FROM questions where id = '"+questionId+"' ");
@@ -292,7 +301,7 @@ app.post('/api/v1/questions/:questionId/answers', verifyToken, (req, res)=>{
         }else {
             //save the answer if question exists
             console.log('the question exists, lets save your answer');
-            pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text) VALUES('"+userId+"', '"+questionId+"', '"+answer+"');", [],(err,result)=>{
+            pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text, created_at) VALUES('"+userId+"', '"+questionId+"', '"+answer+"', '"+timestamp+"');", [],(err,result)=>{
                 if(err){
                     console.log(err);
                     res.status(400).json({
@@ -362,9 +371,9 @@ app.put('/api/v1/questions/:questionId/answers/:answerId', verifyToken, (req, re
 app.post('/api/v1/upvote/:answerId', verifyToken, (req, res)=>{
     const userId =  req.body.user_id;
     const answerId = req.body.answer_id;
-    const time =  new Date().toLocaleString();
+    const timestamp =  new Date().toLocaleString();
 
-        pool.query("INSERT INTO upvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+time+"'); ", [], (err,result)=>{
+        pool.query("INSERT INTO upvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+timestamp+"'); ", [], (err,result)=>{
             if(err) {
                 console.log(err);
                 console.log('action failed');
