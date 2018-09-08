@@ -28,9 +28,10 @@
   },
   "homepage": "https://github.com/michaelNgiri/StackOverflow-Lite#readme",
   "dependencies": {
+    "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "bcrypt": "^3.0.0",
-    "bluebird": "^3.5.1",
+    "bluebird": "^3.5.2",
     "body-parser": "^1.18.3",
     "cassandra": "^0.1.0",
     "chokidar": "^2.0.4",
@@ -47,7 +48,7 @@
     "totoro-node": "^1.1.5"
   },
   "engines": {
-    "node": "5.*.*"
+    "node": "10.*.*"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0"
