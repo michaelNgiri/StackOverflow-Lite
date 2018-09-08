@@ -7,10 +7,6 @@
     "test": "node node_modules/jasmine/bin/jasmine.js",
     "start": "babel-node app.js",
     "setup": "node setup.js",
-    "clean": "rm -rf build && mkdir build",
-    "build-babel": "babel -d ./build ./src -s",
-    "build": "npm run clean && npm run build-babel",
-    "start": "npm run build && node ./build/app.js",
     "test-init": "./node_modules/jasmine/bin/jasmine.js init"
   },
   "repository": {
