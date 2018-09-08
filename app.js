@@ -246,11 +246,13 @@ app.post('/api/v1/questions', verifyToken, (req, res)=>{
                 status:400,
                 msg:"could not save your question, try later"
             });
-        }
-        res.status(200).json({
+        }else{
+        	res.status(200).json({
             status: 200,
             //result:result.rows
         });
+        }
+        
     });
 
 });
