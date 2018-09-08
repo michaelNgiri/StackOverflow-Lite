@@ -44,5 +44,8 @@
     "pg-promise": "^5.9.7",
     "request": "^2.88.0",
     "totoro-node": "^1.1.5"
+  },
+  "engines": {
+    "node": "5.6.0"
   }
 }
