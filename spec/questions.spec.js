@@ -1,11 +1,12 @@
 const Request = require('request');
-require('dotenv').config()
+require('dotenv').config();
+const url = 'https://dev-pool.herokuapp.com';
 const port = process.env.PORT || 3000;
 
 describe("Posting of questions", ()=>{
     let data = {};
     beforeAll((done)=>{
-        Request.post({url:'http://localhost:'+port+'/api/v1/questions'}, function(err,httpResponse,body){
+        Request.post({url:url+'/api/v1/questions'}, function(err,httpResponse,body){
             console.log(httpResponse['statusCode']);
             data.status = httpResponse['statusCode'];
             done();
@@ -19,7 +20,7 @@ describe("Posting of questions", ()=>{
 describe("Retrieving of all questions", ()=>{
     let data = {};
     beforeAll((done)=>{
-        Request.get({url:'http://localhost:'+port+'/api/v1/questions'}, function(err,httpResponse,body){
+        Request.get({url:url+'/api/v1/questions'}, function(err,httpResponse,body){
             console.log(httpResponse['statusCode']);
             data.status = httpResponse['statusCode'];
             done();
@@ -33,7 +34,7 @@ describe("Retrieving of all questions", ()=>{
 describe("Retrieving of a single question", ()=>{
     let data = {};
     beforeAll((done)=>{
-        Request.get({url:'http://localhost:'+port+'/api/v1/questions/1', form: {question_id:2}}, function(err,httpResponse,body){
+        Request.get({url:url+'/api/v1/questions/1', form: {question_id:2}}, function(err,httpResponse,body){
             console.log(httpResponse['statusCode']);
             data.status = httpResponse['statusCode'];
             done();
@@ -48,7 +49,7 @@ describe("Retrieving of a single question", ()=>{
     let data = {};
     const questionId = 12000;
     beforeAll((done)=>{
-        Request.get({url:'http://localhost:'+port+'/api/v1/questions/3', form: {question_id:questionId}}, function(err,httpResponse,body){
+        Request.get({url:url+'/api/v1/questions/3', form: {question_id:questionId}}, function(err,httpResponse,body){
             console.log(httpResponse['statusCode']);
             data.status = httpResponse['statusCode'];
             done();
