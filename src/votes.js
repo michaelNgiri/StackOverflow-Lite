@@ -10,7 +10,15 @@ const Pool = require('pg').Pool;
 
 const pool = new Pool(config);
 
-
+/*
+ * @oas [get] /api/v1/votes/upvote/:answerId
+ * description: "upvote an answer"
+ * parameters:
+ *   - (path)  answer
+ *   - (query) 0
+     - (answer id)the id of the answer you want to upvote
+     - (user id) id of the user attempting this action
+*/
 router.post('/upvote/:answerId', verifyToken, (req, res)=>{
     const table ='upvotes';
     const userId =  req.body.user_id;
@@ -24,7 +32,15 @@ router.post('/upvote/:answerId', verifyToken, (req, res)=>{
 
 
 
-
+/*
+ * @oas [get] /api/v1/votes/downvote/:answerId
+ * description: "downvote an answer"
+ * parameters:
+ *   - (path)  answer
+ *   - (query) 0
+     - (answer id)the id of the answer you want to downvote
+     - (user id) id of the user attempting this action
+*/
 //downvoting of answers
 router.post('/downvote/:answerId', verifyToken, (req, res)=>{
     const table = 'downvotes';
@@ -37,7 +53,6 @@ router.post('/downvote/:answerId', verifyToken, (req, res)=>{
 
 });
 
-module.exports = router;
 
 function vote(res, queryString) {
     console.log(queryString);
@@ -59,3 +74,4 @@ function vote(res, queryString) {
     });
 
 }
+module.exports = router;
