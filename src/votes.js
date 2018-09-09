@@ -18,7 +18,7 @@ router.post('/upvote/:answerId', verifyToken, (req, res)=>{
     const timestamp =  new Date().toLocaleString();
     const queryString = "INSERT INTO upvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+timestamp+"') ";
 
-    vote(table, userId, answerId, timestamp, res, queryString);
+    vote(res, queryString);
 
 });
 
@@ -32,14 +32,14 @@ router.post('/downvote/:answerId', verifyToken, (req, res)=>{
     const answerId = req.body.answer_id;
     const time =  new Date().toLocaleString();
     const queryString = "INSERT INTO downvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+timestamp+"') ";
-        vote(table, userId, answerId, time, queryString);
+        vote(res, queryString);
 
 
 });
 
 module.exports = router;
 
-function vote(table, userId, answerId, timestamp, res, queryString) {
+function vote(res, queryString) {
     console.log(queryString);
     pool.query(queryString, [], (err,result)=>{
         if(err) {
