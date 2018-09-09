@@ -42,7 +42,7 @@ app.get('/', (req, res)=>{
 */
 app.get('/api/v1/', (req, res)=>{
     res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
+    res.send('welcome to stackoverflow-lite');
 });
 
 

@@ -45,6 +45,7 @@
     "pg-promise": "^5.9.7",
     "request": "^2.88.0",
     "swagger-jsdoc": "^3.0.3",
+    "babel-cli": "^6.26.0",
     "totoro-node": "^1.1.5"
   },
   "engines": {
