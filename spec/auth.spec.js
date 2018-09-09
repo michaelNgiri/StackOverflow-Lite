@@ -1,7 +1,11 @@
 const Request = require('request');
 require('dotenv').config();
-const url = process.env.SITE_URL;
 const port = process.env.PORT || 3000;
+if (process.env.APP_ENV === 'local') {
+    const url = 'localhost'+port;
+}else{
+     const url = process.env.SITE_URL;
+}
 
         describe("User Registration Form", ()=>{
             let data = {};
