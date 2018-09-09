@@ -16,7 +16,7 @@ describe("Upvoting of an answer", ()=>{
             done();
         });
     });
-    it('should return 400 if the request token is missing', ()=>{
+    it('should return 403 if the request token is missing or wrong', ()=>{
         expect(data.status).toBe(403);
     });
 });
@@ -31,6 +31,6 @@ describe("POST route", ()=>{
         });
     });
     it('should return 404 if the request is sent as GET instead of POST', ()=>{
-        expect(data.status).toBe(403);
+        expect(data.status).toBe(404);
     });
 });
