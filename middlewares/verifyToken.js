@@ -7,10 +7,9 @@ function  verifyToken(req, res, next) {
     const requestHeader = req.headers['authorization'];
     //check if header has the request token
     if(requestHeader !== undefined){
-        //grant access to user
-        const  bearer = requestHeader.split(' ');
+        
         //get  the token
-        req.token = bearer[1];
+        req.token = requestHeader;
         console.log(req.token);
         jwt.verify(req.token, 'secret_key', (err, user)=>{
             if(err){
