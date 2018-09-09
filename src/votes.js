@@ -12,26 +12,14 @@ const pool = new Pool(config);
 
 
 router.post('/upvote/:answerId', verifyToken, (req, res)=>{
+    const table ='upvotes';
     const userId =  req.body.user_id;
     const answerId = req.body.answer_id;
     const timestamp =  new Date().toLocaleString();
+    const queryString = "INSERT INTO upvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+timestamp+"') ";
 
-        pool.query("INSERT INTO upvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+timestamp+"'); ", [], (err,result)=>{
-            if(err) {
-                console.log(err);
-                console.log('action failed');
-                res.status(400).json({
-                    status: 400,
-                    message: "could not complete the requested action, try later"
-                });
-            }else {
-                console.log('action completed');
-                res.status(200).json({
-                    status: 200,
-                    message: "succesful!"
-                });
-            }
-        });
+    vote(table, userId, answerId, timestamp, res, queryString);
+
 });
 
 
@@ -39,11 +27,21 @@ router.post('/upvote/:answerId', verifyToken, (req, res)=>{
 
 //downvoting of answers
 router.post('/downvote/:answerId', verifyToken, (req, res)=>{
-    const userId = 1;// req.body.user_id;
-    const answerId = 1;//req.body.answer_id;
+    const table = 'downvotes';
+    const userId = req.body.user_id;
+    const answerId = req.body.answer_id;
     const time =  new Date().toLocaleString();
+    const queryString = "INSERT INTO downvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+timestamp+"') ";
+        vote(table, userId, answerId, time, queryString);
 
-    pool.query("INSERT INTO downvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+time+"'); ", [],(err,result)=>{
+
+});
+
+module.exports = router;
+
+function vote(table, userId, answerId, timestamp, res, queryString) {
+    console.log(queryString);
+    pool.query(queryString, [], (err,result)=>{
         if(err) {
             console.log(err);
             console.log('action failed');
@@ -60,6 +58,4 @@ router.post('/downvote/:answerId', verifyToken, (req, res)=>{
         }
     });
 
-});
-
-module.exports = router;
+}
