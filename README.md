@@ -15,8 +15,11 @@ this project was built using flask python framework
 
 
 
-####Code climate badge
+
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c40a335c9772e1b69319/test_coverage)](https://codeclimate.com/github/michaelNgiri/StackOverflow-Lite/test_coverage)
 
-####Code climate reporter id
-a7764ced2ad73f96a3647ffc988f9c0cb682be367ead7c95f88c6645af26b0d4
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/c40a335c9772e1b69319/maintainability)](https://codeclimate.com/github/michaelNgiri/StackOverflow-Lite/maintainability)
+
+
+https://travis-ci.org/michaelNgiri/StackOverflow-Lite.svg?branch=master
