@@ -1,21 +1,14 @@
 const express = require('express');
 const app = express();
-const bcrypt = require('bcrypt');
-require('dotenv').config()
-const Pool = require('pg').Pool;
-const config = require('./db/db-string');
-const verifyToken = require('./middlewares/verifyToken');
-const userInfoIsValid = require('./middlewares/verifyUserInfo');
+require('dotenv').config();
 
 const port = process.env.PORT || 3000;
 
-const pool = new Pool(config);
 //const path = require('path');
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-const jwt = require('jsonwebtoken');
 
 const bodyParser = require('body-parser');
 
@@ -50,6 +43,9 @@ app.get('/api/v1/index.html', (req, res)=>{
 
 
 app.listen(port, (err)=>{
+    if(err){
+        console.log(err);
+    }
     console.log('server started at port: ' + port);
 });
 

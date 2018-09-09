@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const config = require('../db/db-string');

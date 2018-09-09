@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const config = require('../db/db-string');
@@ -16,8 +14,7 @@ const pool = new Pool(config);
 router.get('/', (req, res)=>{
     (async () => {
         const { rows } = await pool.query("SELECT * FROM questions");
-        const result = rows;
-        res.status(200).json(result);
+        res.status(200).json(rows);
     })()
 });
 
@@ -26,8 +23,7 @@ router.get('/recent', (req, res)=>{
     	console.log('fetching the latest question');
         const { rows } = await pool.query("select * from questions where id != 0 order by created_at desc limit 3");
         console.log(rows);
-        const result = rows;
-        res.status(200).json(result);
+        res.status(200).json(rows);
     })()
 });
 
