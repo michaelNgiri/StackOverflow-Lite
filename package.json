@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/michaelNgiri/StackOverflow-Lite#readme",
   "dependencies": {
-    "babel-cli": "^6.26.0",
+    // "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "bcrypt": "^3.0.0",
     "bluebird": "^3.5.2",
