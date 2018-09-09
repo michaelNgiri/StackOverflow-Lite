@@ -13,7 +13,13 @@ const Pool = require('pg').Pool;
 const pool = new Pool(config);
 
 
-//Login a user 
+ /*
+ * @oas [get] /api/v1/auth/login
+ * description: "The login route"
+ * parameters:
+ *   - (email) The email used to register
+ *   - (pasword) returns user info including token, user id, email, cookie
+*/
 router.post('/login', function (req, res) {
     const email = req.body.email;
     console.log(email);
@@ -85,7 +91,12 @@ router.post('/login', function (req, res) {
 
 
 
-//Register a user 
+ /*
+ * @oas [get] /api/v1/auth/signup
+ * description: "The route for signup"
+ * parameters:
+ *   - (path) signup
+*/
 router.post('/signup', function(req, res) {
     //res.sendStatus(200);
     //call the function for validating user inputs

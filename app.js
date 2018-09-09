@@ -2,26 +2,7 @@ const express = require('express');
 const app = express();
 
 require('dotenv').config();
-const swaggerJSDoc = require('swagger-jsdoc');
-// swagger definition
-const swaggerDefinition = {
-    info: {
-        title: 'Node Swagger API',
-        version: '1.0.0',
-        description: 'Demonstrating how to describe a RESTful API with Swagger',
-    },
-    host: 'localhost:3000',
-    basePath: '/',
-};
-// options for the swagger docs
-const options = {
-    // import swaggerDefinitions
-    swaggerDefinition: swaggerDefinition,
-    // path to the API docs
-    apis: ['./**/routes/*.js','routes.js'],// pass all in array
-};
-// initialize swagger-jsdoc
-const swaggerSpec = swaggerJSDoc(options);
+
 
 
 const port = process.env.PORT || 3000;
@@ -45,27 +26,20 @@ app.use('/api/v1/questions', questionsRoute);
 app.use('/api/v1/votes', votesRoute);
 
 
-
+ /*
+ * @oas [get] /
+ * description: "The API base url or home page"
+ * parameters:
+*/
 app.get('/', (req, res)=>{
     res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
+    res.send('welcome to stackoverflow-lite');
 });
 
-/**
- * @swagger
- * /api/v1/:
- *   get:
- *     tags:
- *       - users
- *     description: Returns all users
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: An array of users
- *         schema:
- *           $ref: '#/definitions/users'
- */
+ /*
+ * @oas [get] /
+ * description: "The API base url or home page"
+*/
 app.get('/api/v1/', (req, res)=>{
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
@@ -73,7 +47,10 @@ app.get('/api/v1/', (req, res)=>{
 
 
 
-
+ /*
+ * @oas [get] /api/v1/index.html
+ * description: "The API base url or home page"
+*/
 app.get('/api/v1/index.html', (req, res)=>{
         res.sendFile(__dirname + "/" + "index.html");
     });

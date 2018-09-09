@@ -10,6 +10,13 @@ const Pool = require('pg').Pool;
 
 const pool = new Pool(config);
 
+/*
+ * @oas [get] /api/v1/questions/
+ * description: "fetch all questions"
+ * parameters:
+ *   - (path) questions 
+ *   - (query result) several
+*/
 //Fetch all questions 
 router.get('/', (req, res)=>{
     (async () => {
@@ -18,16 +25,32 @@ router.get('/', (req, res)=>{
     })()
 });
 
+/*
+ * @oas [get] /api/v1/questions/recent
+ * description: "fetch the most recent question"
+ * parameters:
+ *   - (path) recent question
+ *   - (query recult) 1
+*/
+//get the most recent question
 router.get('/recent', (req, res)=>{
     (async () => { 
     	console.log('fetching the latest question');
-        const { rows } = await pool.query("select * from questions where id != 0 order by created_at desc limit 3");
+        const { rows } = await pool.query("select * from questions where id != 0 order by created_at desc limit 1");
         console.log(rows);
         res.status(200).json(rows);
     })()
 });
 
 
+/*
+ * @oas [get] /api/v1/questions/questionId
+ * description: "fetch a specific question"
+ * parameters:
+ *   - (path) question
+ *   - (query result) 1
+     - (question id) id of the question you want to access
+*/
 //Fetch a specific  question 
 //This should come with all the  answers  provided so far for the question. 
 router.get('/:questionId', (req, res)=>{
@@ -66,7 +89,16 @@ router.get('/:questionId', (req, res)=>{
     })();
 });
 
-
+/*
+ * @oas [post] /api/v1/questions/
+ * description: "mark an answer as accepted"
+ * parameters:
+ *   - (path) post a question
+ *   - (query result) 0
+     - (question)the question you want to ask
+     - (question title) title of the question 
+     - (user id) id of the user attempting this action
+*/
 //Post a question 
 router.post('/', verifyToken, (req, res)=>{
 	console.log('request received, lets try and save your question');
@@ -97,11 +129,18 @@ router.post('/', verifyToken, (req, res)=>{
 });
 
 
-
+/*
+ * @oas [delete] /api/v1/questions/delete
+ * description: "delete a question"
+ * parameters:
+ *   - (path) delete a question
+ *   - (query result) 0
+     - (question id) id of the question you want to delete
+*/
 
 //Delete a question
 //This endpoint should be available to  the author of the question. 
-router.delete('/:questionId', (req, res)=>{
+router.delete('/:questionId', verifyToken, (req, res)=>{
 const questionId = req.body.question_id;
     pool.query("DELETE FROM questions where id = '"+questionId+"' ", [],(err,result)=>{
         if(err){
@@ -115,6 +154,16 @@ const questionId = req.body.question_id;
     });
 });
 
+
+/*
+ * @oas [post] /api/v1/questions/answers
+ * description: "post an answer to a question"
+ * parameters:
+ *   - (path) questions answer
+ *   - (query result) 0
+     - (question id) id of the question that you wish to answer
+     - (user id) id of the user attempting this action
+*/
 
 //Post an answer to  a question
 router.post('/answers', verifyToken, (req, res)=>{
@@ -154,8 +203,19 @@ router.post('/answers', verifyToken, (req, res)=>{
 });
 
 
+ /*
+ * @oas [put] /api/v1/questions/answers/:answerId
+ * description: "mark an answer as accepted"
+ * parameters:
+ *   - (path) questions answer
+ *   - (query result) 0
+     - (answer id)the id of the answer you want to mark as accepted
+     - (question id) id of the question that has the answer
+     - (user id) id of the user attempting this action
+*/
+
 //Mark an answer as  accepted or  update an answer.
-//This endpoint should be available to  only the answer author and question 
+//This endpoint is available to  only the answer author and question 
 // author. The answer author calls the  route to
 // update answer while the  question author calls the route to  accept answer.
 router.put('/answers/:answerId', verifyToken, (req, res)=>{
