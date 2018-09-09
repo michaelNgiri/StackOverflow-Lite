@@ -1,0 +1,10 @@
+language: node_js
+
+# deploy:
+#   provider: heroku
+#   api_key: 
+#   on:
+#     branch: develop
+#   run:
+#     - "node setup.js"
+#     - "npm test"

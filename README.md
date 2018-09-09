@@ -12,3 +12,11 @@ this project was built using flask python framework
 *users can ask questions*
 *users can post answers to questions asked by other users*
 *users can mark an answer as the chosen answer if the solution provided in the answer works for them*
+
+
+
+####Code climate badge
+[![Test Coverage](https://api.codeclimate.com/v1/badges/c40a335c9772e1b69319/test_coverage)](https://codeclimate.com/github/michaelNgiri/StackOverflow-Lite/test_coverage)
+
+####Code climate reporter id
+a7764ced2ad73f96a3647ffc988f9c0cb682be367ead7c95f88c6645af26b0d4

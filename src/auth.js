@@ -3,15 +3,12 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-require('dotenv').config()
+require('dotenv').config();
+const config = require('../db/db-string');
+const userInfoIsValid = require('../middlewares/verifyUserInfo');
 
 const Pool = require('pg').Pool;
-const config = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-};
+
 
 const pool = new Pool(config);
 
@@ -24,6 +21,10 @@ router.post('/login', function (req, res) {
         pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], function (err, result) {
             console.log(result.rows.length);
             if (result.rows.length < 1) {
+                res.status(401).json({
+                            status: 401,
+                            message: 'this email is not registered'
+                        });
                 console.log('this email is not registered');
 
             }else {
@@ -66,7 +67,7 @@ router.post('/login', function (req, res) {
                         //return authentication failure error
                         res.status(401).json({
                             status: 401,
-                            msg: 'wrong password'
+                            message: 'wrong password'
                         });
                     }
                 })()
@@ -76,7 +77,7 @@ router.post('/login', function (req, res) {
         //return authentication failure error
         res.status(401).json({
             status: 401,
-            msg: 'invalid login details, try again'
+            message: 'invalid login details, try again'
         });
     }
 });
@@ -133,17 +134,4 @@ router.post('/signup', function(req, res) {
 
 
 
-function userInfoIsValid(user){
-    if (typeof user.email === "string" &&
-        user.email.trim() !== '' &&
-        typeof user.password === "string" &&
-        user.password.trim() !== '' &&
-        user.password.trim().length >= 5) {
-        // console.log(user.email);
-        // console.log(user.password.trim());
-        return true;
-    }
-    console.log(user);
-    return false;
-}
 module.exports=router;
