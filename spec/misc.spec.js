@@ -10,7 +10,7 @@ if (process.env.APP_ENV === 'local'){
 describe("Upvoting of an answer", ()=>{
     let data = {};
     beforeAll((done)=>{
-        Request.post({url:url+'/api/v1/upvote/2', form: {question_id:2}}, function(err,httpResponse,body){
+        Request.post({url:url+'/api/v1/votes/upvote/1', form: {question_id:2}}, function(err,httpResponse,body){
             console.log(httpResponse['statusCode']);
             data.status = httpResponse['statusCode'];
             done();
