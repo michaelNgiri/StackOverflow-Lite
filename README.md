@@ -21,6 +21,6 @@ this project was built using flask python framework
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/c40a335c9772e1b69319/maintainability)](https://codeclimate.com/github/michaelNgiri/StackOverflow-Lite/maintainability)
 
-[!Build](https://travis-ci.org/michaelNgiri/StackOverflow-Lite.svg?branch=master)
+![Build](https://travis-ci.org/michaelNgiri/StackOverflow-Lite.svg?branch=master)
 
 
