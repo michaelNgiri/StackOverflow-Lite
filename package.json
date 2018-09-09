@@ -48,7 +48,7 @@
     "totoro-node": "^1.1.5"
   },
   "engines": {
-    "node": "10.*.*"
+    "node": "*.*.*"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0"
