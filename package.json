@@ -51,6 +51,7 @@
     "node": "10.*.*"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0"
+    "babel-cli": "^6.26.0",
+    "swagger-inline": "^0.1.3"
   }
 }
