@@ -1,6 +1,28 @@
 const express = require('express');
 const app = express();
+
 require('dotenv').config();
+const swaggerJSDoc = require('swagger-jsdoc');
+// swagger definition
+const swaggerDefinition = {
+    info: {
+        title: 'Node Swagger API',
+        version: '1.0.0',
+        description: 'Demonstrating how to describe a RESTful API with Swagger',
+    },
+    host: 'localhost:3000',
+    basePath: '/',
+};
+// options for the swagger docs
+const options = {
+    // import swaggerDefinitions
+    swaggerDefinition: swaggerDefinition,
+    // path to the API docs
+    apis: ['./**/routes/*.js','routes.js'],// pass all in array
+};
+// initialize swagger-jsdoc
+const swaggerSpec = swaggerJSDoc(options);
+
 
 const port = process.env.PORT || 3000;
 
@@ -24,11 +46,29 @@ app.use('/api/v1/votes', votesRoute);
 
 
 
+app.get('/', (req, res)=>{
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
 
-
+/**
+ * @swagger
+ * /api/v1/:
+ *   get:
+ *     tags:
+ *       - users
+ *     description: Returns all users
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: An array of users
+ *         schema:
+ *           $ref: '#/definitions/users'
+ */
 app.get('/api/v1/', (req, res)=>{
-    console.log(req.headers);
-    res.status(200).send(req.headers);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
 });
 
 
