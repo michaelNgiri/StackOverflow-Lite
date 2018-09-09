@@ -91,7 +91,8 @@ router.post('/', verifyToken, (req, res)=>{
         }else{
         	res.status(200).json({
             status: 200,
-            //result:result.rows
+            message:'question saved',
+            result:result.rows
         });
         }
         
