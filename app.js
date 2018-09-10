@@ -53,8 +53,8 @@ app.get('/', (req, res)=>{
  * description: "The API base url or home page"
 */
 app.get('/api/v1/', (req, res)=>{
-    res.status(400).json({
-        status:400,
+    res.status(200).json({
+        status:200,
         msg:'welcome to stackoverflow-lite'
     });
 });
