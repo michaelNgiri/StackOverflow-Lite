@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const config = require('../db/db-string');
 const userInfoIsValid = require('../middlewares/verifyUserInfo');
+const send400= require('../helpers/400response');
+const send200= require('../helpers/200response');
 
 const Pool = require('pg').Pool;
 
@@ -54,15 +56,16 @@ router.post('/login', function (req, res) {
                         jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
                             //set cookies
                             const authToken = token;
-                            res.cookie( 'Authorization',authToken, {
+                            res.cookie( 'Authorization',authToken, 'id', id, {
                                 httpOny:true,
                                 //signed:true,
                                 //secure:secureCookie
                             });
                             // res.headers({
-                            //    Authorization:token
+                            //    Authorization:token,
+                            //     id:id
                             // });
-                            res.json({
+                            res.status(200).json({
                                 status:200,
                                 message: "success, you are logged in",
                                 Authorization:authToken,
@@ -129,10 +132,7 @@ router.post('/signup', function(req, res) {
                 res.status(409).send('email in use');
             }
         }else{
-            res.status(400).json({
-                status:400,
-                message:"registration failed, try using another email"
-            })
+            send400(res);
         }
         });
     }else {
@@ -142,7 +142,6 @@ router.post('/signup', function(req, res) {
         res.status(418).send('invalid info submitted');
     }
 });
-
 
 
 module.exports=router;

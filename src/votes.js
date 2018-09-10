@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const config = require('../db/db-string');
 const verifyToken = require('../middlewares/verifyToken');
+const send400= require('../helpers/400response');
+const send200= require('../helpers/200response');
 
 const Pool = require('pg').Pool;
 
@@ -43,11 +45,12 @@ router.post('/upvote/:answerId', verifyToken, (req, res)=>{
 */
 //downvoting of answers
 router.post('/downvote/:answerId', verifyToken, (req, res)=>{
+    send400(res);
     const table = 'downvotes';
     const userId = req.body.user_id;
     const answerId = req.body.answer_id;
     const time =  new Date().toLocaleString();
-    const queryString = "INSERT INTO downvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+timestamp+"') ";
+    const queryString = "INSERT INTO downvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+time+"') ";
         vote(res, queryString);
 
 
@@ -58,20 +61,14 @@ function vote(res, queryString) {
     console.log(queryString);
     pool.query(queryString, [], (err,result)=>{
         if(err) {
-            console.log(err);
-            console.log('action failed');
-            res.status(400).json({
-                status: 400,
-                message: "could not complete the requested action, try later"
-            });
+            send400(res);
         }else {
             console.log('action completed');
-            res.status(200).json({
-                status: 200,
-                message: "succesful!"
-            });
+            send200(res);
         }
     });
 
 }
+
+
 module.exports = router;

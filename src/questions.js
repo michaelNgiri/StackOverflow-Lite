@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const config = require('../db/db-string');
 const verifyToken = require('../middlewares/verifyToken');
+const send400= require('../helpers/400response');
+const send200= require('../helpers/200response');
 
 const Pool = require('pg').Pool;
 
@@ -122,16 +124,9 @@ router.post('/', verifyToken, (req, res)=>{
         if(err){
             console.log(err);
             console.log('could not save question');
-            res.status(400).json({
-                status:400,
-                message:"could not save your question, try later"
-            });
+            send400(res);
         }else{
-        	res.status(200).json({
-            status: 200,
-            message:'question saved',
-            result:result.rows
-        });
+        	send200(res);
         }
         
     });
@@ -160,7 +155,7 @@ const questionId = req.body.question_id;
                 message:'cant delete, the question does not exist'
             });
         }
-        res.status(200).send('question deleted');
+        send200(res);
     });
 });
 
@@ -200,12 +195,9 @@ router.post('/answers', verifyToken, (req, res)=>{
             pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text, created_at) VALUES('"+userId+"', '"+questionId+"', '"+answer+"', '"+timestamp+"');", [],(err,result)=>{
                 if(err){
                     console.log(err);
-                    res.status(400).json({
-                        status:400,
-                        message:'unable to save your answer, try again later'
-                    });
+                    send400(res);
                 }
-                res.status(200).send('answer saved');
+                send200(res);
             });
         }
 
@@ -256,10 +248,7 @@ router.put('/answers/:answerId', verifyToken, (req, res)=>{
                         });
                     }else {
                         console.log('action completed');
-                        res.status(200).json({
-                            status: 200,
-                            message: "succesful!"
-                        });
+                        send200(res);
                     }
                 }); //end function to mark answer as selected
 
@@ -273,5 +262,6 @@ router.put('/answers/:answerId', verifyToken, (req, res)=>{
     });
 
 });
+
 
 module.exports = router;
