@@ -6,6 +6,7 @@ const config = require('../db/db-string');
 const verifyToken = require('../middlewares/verifyToken');
 const send400= require('../helpers/400response');
 const send200= require('../helpers/200response');
+const send404= require('../helpers/404response');
 
 const Pool = require('pg').Pool;
 
@@ -77,10 +78,7 @@ router.get('/:questionId', (req, res)=>{
         //console.log(question.length)
         if (rows.length < 1 || rows.length === undefined) {
 
-            res.status(404).json({
-                status:404,
-                message:'the question does not exist'
-            });
+            send404(res);
             console.log('the question does not exist');
         }else {
             //retrieve answers if question exists
@@ -184,10 +182,7 @@ router.post('/answers', verifyToken, (req, res)=>{
         //console.log(question.length)
         if (rows.length < 1 || rows.length === undefined) {
 
-            res.status(404).json({
-                status:404,
-                message:'the question does not exist'
-            });
+            send404(res);
             console.log('the question does not exist');
         }else {
             //save the answer if question exists

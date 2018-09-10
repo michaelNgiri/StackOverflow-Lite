@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const send200= require('../helpers/200response');
 
 require('dotenv').config();
 
@@ -53,10 +54,7 @@ app.get('/', (req, res)=>{
  * description: "The API base url or home page"
 */
 app.get('/api/v1/', (req, res)=>{
-    res.status(200).json({
-        status:200,
-        msg:'welcome to stackoverflow-lite'
-    });
+    send200(res);
 });
 
 

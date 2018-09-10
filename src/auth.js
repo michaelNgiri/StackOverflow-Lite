@@ -8,6 +8,7 @@ const config = require('../db/db-string');
 const userInfoIsValid = require('../middlewares/verifyUserInfo');
 const send400= require('../helpers/400response');
 const send200= require('../helpers/200response');
+const send401= require('../helpers/401response');
 
 const Pool = require('pg').Pool;
 
@@ -29,10 +30,7 @@ router.post('/login', function (req, res) {
         pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], function (err, result) {
             console.log(result.rows.length);
             if (result.rows.length < 1) {
-                res.status(401).json({
-                            status: 401,
-                            message: 'this email is not registered'
-                        });
+                send401(res);
                 console.log('this email is not registered');
 
             }else {
@@ -74,20 +72,14 @@ router.post('/login', function (req, res) {
                         });
                     }else {
                         //return authentication failure error
-                        res.status(401).json({
-                            status: 401,
-                            message: 'wrong password'
-                        });
+                        send401(res);
                     }
                 })()
             }
         });
     }else {
         //return authentication failure error
-        res.status(401).json({
-            status: 401,
-            message: 'invalid login details, try again'
-        });
+        send401(res);
     }
 });
 
@@ -121,7 +113,7 @@ router.post('/signup', function(req, res) {
                     console.log('insert the user to database if not already registered');
                     pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');", function(err, queryResult) {
                         console.log(queryResult);
-                        res.status(200).send('registration successful');
+                        send200(res);
                         console.log('registration successful')
                     });
                 });
