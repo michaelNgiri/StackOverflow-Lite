@@ -5,6 +5,7 @@ function  verifyToken(req, res, next) {
     //get request headers
     console.log(req.headers);
     const requestHeader = req.headers['authorization'];
+    console.log(req.headers);
     //check if header has the request token
     if(requestHeader !== undefined){
         

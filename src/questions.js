@@ -42,6 +42,16 @@ router.get('/recent', (req, res)=>{
     })()
 });
 
+router.get('question/owner/:ownerId', (req, res)=>{
+    const userId = req.params.userId;
+    (async () => {
+        console.log('fetching the latest question');
+        const { rows } = await pool.query("select first_name, last_name, email from users where id = '"+userId+"' ");
+        console.log('the question was asked by'+rows);
+        console.log(rows);
+        res.status(200).json(rows);
+    })()
+});
 
 /*
  * @oas [get] /api/v1/questions/questionId
