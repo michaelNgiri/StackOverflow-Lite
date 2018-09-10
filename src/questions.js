@@ -225,10 +225,7 @@ router.put('/answers/:answerId', verifyToken, (req, res)=>{
         if(err){
             console.log(err);
             console.log('could not find the question');
-            res.status(400).json({
-                status:400,
-                message:"could not find the question, try later"
-            });
+            send404(res);
         }else {
             console.log(result);
             //mark answer as accepted
@@ -237,10 +234,7 @@ router.put('/answers/:answerId', verifyToken, (req, res)=>{
                     if(err) {
                         console.log(err);
                         console.log('action failed');
-                        res.status(400).json({
-                            status: 400,
-                            message: "could not complete the requested action, try later"
-                        });
+                       send404(res);
                     }else {
                         console.log('action completed');
                         send200(res);
