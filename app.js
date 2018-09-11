@@ -39,7 +39,7 @@ app.use('/api/v1/questions', questionsRoute);
 app.use('/api/v1/votes', votesRoute);
 
 
-const send200= require('../helpers/200response');
+const send200= require('./helpers/200response');
 
  /*
  * @oas [get] /
