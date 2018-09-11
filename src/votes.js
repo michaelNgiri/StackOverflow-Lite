@@ -4,13 +4,14 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const config = require('../db/db-string');
 const verifyToken = require('../middlewares/verifyToken');
-const send400= require('../helpers/400response');
-const send200= require('../helpers/200response');
-
 const Pool = require('pg').Pool;
 
 
 const pool = new Pool(config);
+
+
+const send400= require('../helpers/400response');
+const send200= require('../helpers/200response');
 
 /*
  * @oas [get] /api/v1/votes/upvote/:answerId

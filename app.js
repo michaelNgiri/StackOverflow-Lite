@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const send200= require('../helpers/200response');
 
 require('dotenv').config();
 
@@ -33,8 +32,9 @@ app.use(function(req, res, next) {
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/questions', questionsRoute);
 app.use('/api/v1/votes', votesRoute);
- 
 
+
+const send200= require('../helpers/200response');
 
  /*
  * @oas [get] /
