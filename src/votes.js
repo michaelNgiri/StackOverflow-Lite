@@ -4,9 +4,18 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const config = require('../db/db-string');
 const verifyToken = require('../middlewares/verifyToken');
+
+//enable cors
+router.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers","*");
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    next();
+});
+
 const Pool = require('pg').Pool;
-
-
 const pool = new Pool(config);
 
 

@@ -21,6 +21,7 @@ const votesRoute = require('./src/votes');
 //configure body-parser for express
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+
 app.use(function(req, res, next) {  
       res.header('Access-Control-Allow-Origin', req.headers.origin);
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -29,6 +30,7 @@ app.use(function(req, res, next) {
       res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
       next();
  });
+
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/questions', questionsRoute);
 app.use('/api/v1/votes', votesRoute);
