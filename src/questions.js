@@ -8,15 +8,6 @@ const verifyToken = require('../middlewares/verifyToken');
 const cors = require('cors');
 router.use(cors());
 
-//enable cors
-router.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Headers","*");
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    next();
-});
 
 const send400= require('../helpers/400response');
 const send200= require('../helpers/200response');
