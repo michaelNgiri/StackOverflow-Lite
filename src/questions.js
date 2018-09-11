@@ -5,6 +5,9 @@ require('dotenv').config();
 const config = require('../db/db-string');
 const verifyToken = require('../middlewares/verifyToken');
 
+const cors = require('cors');
+router.use(cors());
+
 //enable cors
 router.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', req.headers.origin);
