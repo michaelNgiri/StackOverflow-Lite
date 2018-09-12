@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+// const http = require('http'),
+//     fs = require('fs');
+
 require('dotenv').config();
 
 
@@ -39,30 +42,31 @@ const send200= require('./helpers/200response');
  * parameters:
 */
 app.get('/', (req, res)=>{
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).json({
-        status:200,
-        msg:'welcome to stackoverflow-lite'
-    });
-});
+    res.setHeader('Content-Type', 'text/html');
+    res.status(200).sendFile(__dirname + "/" + "docs/index.html");
 
+});//content-type: ; charset=utf-8
+
+app.get('/swagger_json', (req, res)=>{
+    res.setHeader('Content-Type', 'text/html');
+    res.status(200).sendFile(__dirname + "/" + "docs/swagger.json");
+
+});
  /*
  * @oas [get] /
  * description: "The API base url or home page"
 */
 app.get('/api/v1/', (req, res)=>{
-    send200(res);
+//     fs.readFile('./index.html', function (err, html) {
+//     if (err) {
+//         throw err; 
+//     }         
+//         response.writeHeader(200, {"Content-Type": "text/html"});  
+//         response.write(html);  
+//         response.end();  
+// });
 });
 
-
-
- /*
- * @oas [get] /api/v1/index.html
- * description: "The API base url or home page"
-*/
-app.get('/', (req, res)=>{
-        res.sendFile(__dirname + "/" + "index.html");
-    });
 
 
 
