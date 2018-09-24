@@ -50,6 +50,25 @@ router.get('/recent', (req, res)=>{
     })()
 });
 
+
+//get the most recent question answers
+router.get('/recent/:id/answers', (req, res)=>{
+    const questionId = req.params.id;
+     console.log('recent question id:'+questionId);
+        (async () => {
+                const { rows } = await pool.query("SELECT * FROM answers where linked_question_id = '"+questionId+"' ");
+                if (rows.length < 1 || rows.length === undefined) {
+                    console.log('no answer yet');
+                 questionAnswers = 'no answer yet';
+                }else {  questionAnswers = rows[0]; }
+    res.status(200).json({
+               status:200, answers:questionAnswers
+           });
+     })()
+});
+
+
+
 router.get('question/owner/:ownerId', (req, res)=>{
     const userId = req.params.userId;
     (async () => {
