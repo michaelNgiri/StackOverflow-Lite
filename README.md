@@ -4,8 +4,6 @@ StackOverflow-lite​ is a platform where people can ask questions and provide r
 ## about the project
 this project was built using flask python framework
 
-## How it works
-*the front end of this project performs basic function by making an api call to the backend hosted at heroku*
 
 
 #### features
