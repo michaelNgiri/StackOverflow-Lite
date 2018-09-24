@@ -40,9 +40,11 @@ router.post('/login', function (req, res) {
 
             }else {
                 (async () => {
-                    const { rows } = await pool.query("SELECT password, id FROM users WHERE email = '"+email+"' ");
+                    const { rows } = await pool.query("SELECT * FROM users WHERE email = '"+email+"' ");
                     const dbPassword = rows[0].password;
                     const id = rows[0].id;
+                    const firstName = rows[0].first_name;
+                    const lastName = rows[0].last_name;
                     console.log('email exists, lets see if your password is correct');
 
                     //compare password sent by user with one in db
@@ -53,7 +55,9 @@ router.post('/login', function (req, res) {
                         //login the user
                         const user = {
                             email:email,
-                            id:id
+                            id:id,
+                            lastName:lastName,
+                            firstName:firstName
                         };
 
                         jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
@@ -72,7 +76,7 @@ router.post('/login', function (req, res) {
                                 status:200,
                                 message: "success, you are logged in",
                                 Authorization:authToken,
-                                id:id
+                                user:user
                             })
                         });
                     }else {
