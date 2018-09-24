@@ -27,7 +27,9 @@
     "/api/v1/auth/login": {
       "get": {
         "description": "The login route",
-        "parameters": ["email", "password"],
+        "parameters": {
+          "email":"the clients login email", "password":"password"
+        },
         "responses": {
           "200": {
             "description": "Successful response"
