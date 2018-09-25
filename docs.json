@@ -1,0 +1,17 @@
+{
+  "openapi": "3.0.0",
+  "x-api-id": "stackoverflow-lite",
+  "info": {
+    "version": "1.0.0",
+    "title": "stackoverflow-lite",
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://devpool.herokuapp.com"
+    }
+  ],
+  "paths": {}
+}

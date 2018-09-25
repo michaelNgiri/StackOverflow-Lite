@@ -1,0 +1,149 @@
+{
+  "openapi": "3.0.0",
+  "x-api-id": "stackoverflow-lite",
+  "info": {
+    "version": "1.0.0",
+    "title": "stackoverflow-lite",
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://dev-pool.herokuapp.com"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "description": "The API base url or home page",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "get": {
+        "description": "The login route",
+        "parameters": {
+          "email":"the clients login email", "password":"password"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/signup": {
+      "get": {
+        "description": "The route for signup",
+        "parameters": ["first name", "last name", "email", "password"],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/questions/": {
+      "get": {
+        "description": "fetch all questions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "description": "mark an answer as accepted",
+        "parameters": ["user id", "answer id", "authentication token"],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/questions/recent": {
+      "get": {
+        "description": "fetch the most recent question",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/questions/questionId": {
+      "get": {
+        "description": "fetch a specific question",
+        "parameters": ["question id"],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/questions/delete": {
+      "delete": {
+        "description": "delete a question",
+        "parameters": ["user id", "question id", "authentication token"],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/questions/answers": {
+      "post": {
+        "description": "post an answer to a question",
+        "parameters": ["user id", "question id", "authentication token"],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/questions/answers/:answerId": {
+      "put": {
+        "description": "mark an answer as accepted",
+        "parameters": ["user id", "answer id", "authentication token"],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/votes/upvote/:answerId": {
+      "get": {
+        "description": "upvote an answer",
+        "parameters": ["answer id","user id"],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v1/votes/downvote/:answerId": {
+      "get": {
+        "description": "downvote an answer",
+        "parameters": ["answer id","user id"],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  }
+}

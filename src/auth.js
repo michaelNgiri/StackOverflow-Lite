@@ -3,20 +3,31 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
+require('dotenv').config();
+const config = require('../db/db-string');
+const userInfoIsValid = require('../middlewares/verifyUserInfo');
+
+const cors = require('cors');
+router.use(cors());
 
 
+const send400= require('../helpers/400response');
+const send200= require('../helpers/200response');
+const send401= require('../helpers/401response');
 
 const Pool = require('pg').Pool;
-const config = {
-    host: 'localhost',
-    user: 'postgres',
-    password: 'password',
-    database: 'stack-lite',
-};
+
+
 const pool = new Pool(config);
 
 
-//Login a user 
+ /*
+ * @oas [get] /api/v1/auth/login
+ * description: "The login route"
+ * parameters:
+ *   - (email) The email used to register
+ *   - (pasword) returns user info including token, user id, email, cookie
+*/
 router.post('/login', function (req, res) {
     const email = req.body.email;
     console.log(email);
@@ -24,13 +35,16 @@ router.post('/login', function (req, res) {
         pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], function (err, result) {
             console.log(result.rows.length);
             if (result.rows.length < 1) {
+                send401(res);
                 console.log('this email is not registered');
 
             }else {
                 (async () => {
-                    const { rows } = await pool.query("SELECT password, id FROM users WHERE email = '"+email+"' ");
+                    const { rows } = await pool.query("SELECT * FROM users WHERE email = '"+email+"' ");
                     const dbPassword = rows[0].password;
                     const id = rows[0].id;
+                    const firstName = rows[0].first_name;
+                    const lastName = rows[0].last_name;
                     console.log('email exists, lets see if your password is correct');
 
                     //compare password sent by user with one in db
@@ -41,50 +55,52 @@ router.post('/login', function (req, res) {
                         //login the user
                         const user = {
                             email:email,
-                            id:id
+                            id:id,
+                            lastName:lastName,
+                            firstName:firstName
                         };
 
                         jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
                             //set cookies
                             const authToken = token;
-                            res.cookie( 'Authorization',authToken, {
+                            res.cookie( 'Authorization',authToken, 'id', id, {
                                 httpOny:true,
                                 //signed:true,
                                 //secure:secureCookie
                             });
                             // res.headers({
-                            //    Authorization:token
+                            //    Authorization:token,
+                            //     id:id
                             // });
-                            res.json({
+                            res.status(200).json({
                                 status:200,
                                 message: "success, you are logged in",
                                 Authorization:authToken,
-                                id:id
+                                user:user
                             })
                         });
                     }else {
                         //return authentication failure error
-                        res.status(401).json({
-                            status: 401,
-                            msg: 'wrong password'
-                        });
+                        send401(res);
                     }
                 })()
             }
         });
     }else {
         //return authentication failure error
-        res.status(401).json({
-            status: 401,
-            msg: 'invalid login details, try again'
-        });
+        send401(res);
     }
 });
 
 
 
 
-//Register a user 
+ /*
+ * @oas [get] /api/v1/auth/signup
+ * description: "The route for signup"
+ * parameters:
+ *   - (path) signup
+*/
 router.post('/signup', function(req, res) {
     //res.sendStatus(200);
     //call the function for validating user inputs
@@ -98,14 +114,15 @@ router.post('/signup', function(req, res) {
         console.log('check if the email supplied exists in database');
         //check if the email supplied exists in database
         pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], function (err, result) {
-            console.log(result.rows.length);
-            if(result.rows.length<1){
+           console.log(result.rows.length);
+            if (!err) {
+                if(result.rows.length<1 || result.rows.length === undefined){
                 bcrypt.hash(password, 8).then(function (hashedPassword) {
                     //insert the user to database if not already registered
                     console.log('insert the user to database if not already registered');
                     pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');", function(err, queryResult) {
                         console.log(queryResult);
-                        res.status(200).send('registration successful');
+                        send200(res);
                         console.log('registration successful')
                     });
                 });
@@ -115,6 +132,9 @@ router.post('/signup', function(req, res) {
                 //give a feedback to the user if email is already in use
                 res.status(409).send('email in use');
             }
+        }else{
+            send400(res);
+        }
         });
     }else {
         //feedback to the user if the information supplied is invalid
@@ -125,18 +145,4 @@ router.post('/signup', function(req, res) {
 });
 
 
-
-function userInfoIsValid(user){
-    if (typeof user.email === "string" &&
-        user.email.trim() !== '' &&
-        typeof user.password === "string" &&
-        user.password.trim() !== '' &&
-        user.password.trim().length >= 5) {
-        // console.log(user.email);
-        // console.log(user.password.trim());
-        return true;
-    }
-    console.log(user);
-    return false;
-}
 module.exports=router;
