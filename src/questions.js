@@ -57,8 +57,7 @@ router.get('/recent/:id/answers', (req, res)=>{
      console.log('recent question id:'+questionId);
         (async () => {
                 const { rows } = await pool.query("SELECT * FROM answers where linked_question_id = '"+questionId+"' ");
-                if (rows.length < 1 || rows.length === undefined) {
-                    console.log('no answer yet');
+                if (rows.length < 1 || typeof rows.length === undefined) {
                  questionAnswers = 'no answer yet';
                 }else {  questionAnswers = rows[0]; }
     res.status(200).json({

@@ -41,11 +41,11 @@ const send200= require('./helpers/200response');
  * description: "The API base url or home page"
  * parameters:
 */
-app.get('/', (req, res)=>{
-    res.setHeader('Content-Type', 'text/html');
-    res.status(200).sendFile(__dirname + "/" + "docs/index.html");
+// app.get('/', (req, res)=>{
+//     res.setHeader('Content-Type', 'text/html');
+//     res.status(200).sendFile(__dirname + "/" + "docs/index.html");
 
-});//content-type: ; charset=utf-8
+// });//content-type: ; charset=utf-8
 
 app.get('/swagger_json', (req, res)=>{
     res.setHeader('Content-Type', 'text/html');
