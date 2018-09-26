@@ -14,6 +14,7 @@ router.use(cors());
 const send400= require('../helpers/400response');
 const send200= require('../helpers/200response');
 const send401= require('../helpers/401response');
+const send503= require('../helpers/503response');
 
 const Pool = require('pg').Pool;
 
@@ -35,6 +36,8 @@ router.post('/login', function (req, res) {
         pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], function (err, result) {
             if (err || result === undefined) {
                 console.log(err);
+                const msg = "Temporarily out of service, try logging in again later";
+                send503(res, msg);
             }else{
             console.log(result.rows.length);
                 if (result.rows.length < 1) {
