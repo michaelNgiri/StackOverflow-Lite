@@ -33,8 +33,11 @@ router.post('/login', function (req, res) {
     console.log(email);
     if (userInfoIsValid(req.body)) {
         pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], function (err, result) {
+            if (err || result === undefined) {
+                console.log(err);
+            }else{
             console.log(result.rows.length);
-            if (result.rows.length < 1) {
+                if (result.rows.length < 1) {
                 send401(res);
                 console.log('this email is not registered');
 
@@ -85,6 +88,8 @@ router.post('/login', function (req, res) {
                     }
                 })()
             }
+            }
+            
         });
     }else {
         //return authentication failure error
