@@ -41,8 +41,9 @@ router.post('/login', function (req, res) {
             }else{
             console.log(result.rows.length);
                 if (result.rows.length < 1) {
-                send401(res);
-                console.log('this email is not registered');
+                    const msg ="this email is not registered";
+                send401(res, msg);
+                console.log(msg);
 
             }else {
                 (async () => {
@@ -86,8 +87,9 @@ router.post('/login', function (req, res) {
                             })
                         });
                     }else {
+                        const msg = "invalid email or password";
                         //return authentication failure error
-                        send401(res);
+                        send401(res, msg);
                     }
                 })()
             }
@@ -96,7 +98,8 @@ router.post('/login', function (req, res) {
         });
     }else {
         //return authentication failure error
-        send401(res);
+        const msg = "the info you submitted does not seem to be right";
+        send401(res, msg);
     }
 });
 
@@ -130,8 +133,9 @@ router.post('/signup', function(req, res) {
                     console.log('insert the user to database if not already registered');
                     pool.query("INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');", function(err, queryResult) {
                         console.log(queryResult);
-                        send200(res);
-                        console.log('registration successful')
+                        const msg = 'registration successful';
+                        send200(res, msg);
+                        console.log(msg)
                     });
                 });
 
@@ -141,7 +145,8 @@ router.post('/signup', function(req, res) {
                 res.status(409).send('email in use');
             }
         }else{
-            send400(res);
+            const msg = 'user does not exist';
+            send400(res, msg);
         }
         });
     }else {
