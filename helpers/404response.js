@@ -1,7 +1,7 @@
-function send404(res) {
+function send404(res, msg) {
     res.status(404).json({
         status: 404,
-        message: "the resource you are looking for does not exist"
+        message: msg
     });
 }
 

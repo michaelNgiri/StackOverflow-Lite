@@ -1,7 +1,7 @@
-function send200(res) {
+function send200(res, msg) {
     res.status(200).json({
         status: 200,
-        message: "succesful!"
+        message: msg
     });
 }
 module.exports=send200;

@@ -1,7 +1,6 @@
-function send400(res) {
+function send400(res, msg) {
     res.status(400).json({
-        status: 400,
-        message: "could not complete the requested action, try later"
+        status: 400,msg"could not complete the requested action, try later"
     });
 }
 
