@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-//verify token middleware
+//token verification middleware 
+//checks if the client has the request token which would prove that the client is logged in
+//in case the request token is missing or wrong, the user will be denied access and 401 helper is called
 function  verifyToken(req, res, next) {
     //get request headers
     console.log(req.headers);
