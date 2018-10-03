@@ -68,7 +68,7 @@ router.get('/recent/:id/answers', (req, res)=>{
 });
 
 
-
+//Gets the information of the user that made a question (first name, last name, email) using its userID
 router.get('question/owner/:ownerId', (req, res)=>{
     const userId = req.params.userId;
     (async () => {
