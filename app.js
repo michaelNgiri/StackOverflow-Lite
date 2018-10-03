@@ -47,6 +47,7 @@ const send200= require('./helpers/200response');
 
 // });//content-type: ; charset=utf-8
 
+//Will move to this page
 app.get('/swagger_json', (req, res)=>{
     res.setHeader('Content-Type', 'text/html');
     res.status(200).sendFile(__dirname + "/" + "docs/swagger.json");
@@ -71,7 +72,7 @@ app.get('/api/v1/', (req, res)=>{
 
 
 
-
+//It will start listening to this particular port number specified by the variable port
 app.listen(port, (err)=>{
     if(err){
         console.log(err);
