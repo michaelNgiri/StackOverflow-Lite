@@ -4,14 +4,14 @@ StackOverflow-lite​ is a platform where people can ask questions and provide r
 ## about the project
 this project was built using ExpressJS framework and PostgreSQL. 
 
-#coding style
+### coding style guide 🈁
 AirBnB
 
-#Testing framework 
+### Testing framework 
 Jasmine 🚄
 
-#JavaScript
-ES6
+### JavaScript
+ES6 🔥 
 
 
 
@@ -32,4 +32,6 @@ authentication required to use some live API features
 
 ![Build](https://travis-ci.org/michaelNgiri/StackOverflow-Lite.svg?branch=master)
 
+#### staging
+🚩 `http://dev-pool.herokuapp.com`
 
