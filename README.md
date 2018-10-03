@@ -2,7 +2,16 @@
 StackOverflow-lite​ is a platform where people can ask questions and provide responses. (a minimal version of stack overflow) 
 
 ## about the project
-this project was built using flask python framework
+this project was built using ExpressJS framework and PostgreSQL. 
+
+#coding style
+AirBnB
+
+#Testing framework 
+Jasmine 🚄
+
+#JavaScript
+ES6
 
 
 
@@ -10,6 +19,8 @@ this project was built using flask python framework
 *users can ask questions*
 *users can post answers to questions asked by other users*
 *users can mark an answer as the chosen answer if the solution provided in the answer works for them*
+
+authentication required to use some live API features 
 
 
 
