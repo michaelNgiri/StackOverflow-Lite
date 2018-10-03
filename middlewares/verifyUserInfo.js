@@ -1,6 +1,8 @@
-//this middleware checks that the info supplied in either the signup or login form is valid and of the right type
-//empty string is rejected
-//returns true or false to the caller
+ /// <summary>
+ /// Verifies that the user information is in a valid format and not empty
+ /// </summary>
+ /// <param name="user"></param>
+ /// <returns>true for a valid user and false for an invallid user</returns>
 function userInfoIsValid(user){
     if (typeof user.email === "string" &&
         user.email.trim() !== '' &&
