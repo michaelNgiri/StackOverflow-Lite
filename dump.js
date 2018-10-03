@@ -35,6 +35,8 @@ user validation
 //     return validEmail && validPassword;
 // }
 
+
+//Function for retrieving users having the same email as the user in the parameter
 async function userExists(user) {
     const email = user.email;
     pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [], function (err, result) {
@@ -63,12 +65,13 @@ async function userExists(user) {
 
 login queries
         (async () => {
+               //Retrieving password from the email
 
             const { rows } = await pool.query("SELECT password FROM users WHERE email = '"+email+"' ")
 
             if ({ rows }.length < 1) {
-
-                console.log('this email is not registered');
+ 
+                console.log('this email is not registered');          //Chcecking for a registered email
 
             }else {
                 const dbPassword = rows[0].password;
