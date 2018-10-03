@@ -4,15 +4,10 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const config = require('../db/db-string');
 const verifyToken = require('../middlewares/verifyToken');
-
 const cors = require('cors');
 router.use(cors());
-
-
 const Pool = require('pg').Pool;
 const pool = new Pool(config);
-
-
 const send400= require('../helpers/400response');
 const send200= require('../helpers/200response');
 
@@ -31,13 +26,9 @@ router.post('/upvote/:answerId', verifyToken, (req, res)=>{
     const answerId = req.body.answer_id;
     const timestamp =  new Date().toLocaleString();
     const queryString = "INSERT INTO upvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+timestamp+"') ";
-
     vote(res, queryString);
 
 });
-
-
-
 /*
  * @oas [get] /api/v1/votes/downvote/:answerId
  * description: "downvote an answer"
@@ -56,11 +47,7 @@ router.post('/downvote/:answerId', verifyToken, (req, res)=>{
     const time =  new Date().toLocaleString();
     const queryString = "INSERT INTO downvotes(user_id, answer_id, created_at) VALUES('"+userId+"', '"+answerId+"', '"+time+"') ";
         vote(res, queryString);
-
-
 });
-
-
 function vote(res, queryString) {
     console.log(queryString);
     pool.query(queryString, [], (err,result)=>{
@@ -72,8 +59,5 @@ function vote(res, queryString) {
             send200(res, msg);
         }
     });
-
 }
-
-
 module.exports = router;
