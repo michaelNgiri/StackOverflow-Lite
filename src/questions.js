@@ -18,6 +18,7 @@ const Pool = require('pg').Pool;
 
 const pool = new Pool(config);
 
+
 /*
  * @oas [get] /api/v1/questions/
  * description: "fetch all questions"
@@ -30,7 +31,7 @@ router.get('/', (req, res)=>{
     (async () => {
         const { rows } = await pool.query("SELECT * FROM questions");
         res.status(200).json(rows);
-    })()
+    })();
 });
 
 /*
@@ -47,7 +48,7 @@ router.get('/recent', (req, res)=>{
         const { rows } = await pool.query("select * from questions where id != 0 order by created_at desc limit 1");
         console.log(rows);
         res.status(200).json(rows);
-    })()
+    })();
 });
 
 
@@ -63,7 +64,7 @@ router.get('/recent/:id/answers', (req, res)=>{
     res.status(200).json({
                status:200, answers:questionAnswers
            });
-     })()
+     })();
 });
 
 
@@ -76,7 +77,7 @@ router.get('question/owner/:ownerId', (req, res)=>{
         console.log('the question was asked by'+rows);
         console.log(rows);
         res.status(200).json(rows);
-    })()
+    })();
 });
 
 
@@ -118,8 +119,8 @@ router.get('/:questionId', (req, res)=>{
                 }else {  questionAnswers = rows[0]; }
                 res.status(200).json({
                     status:200, question:question, answers:questionAnswers
-                })
-            })()
+                });
+            })();
         }
 
     })();
