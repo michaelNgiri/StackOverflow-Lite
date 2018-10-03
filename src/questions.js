@@ -58,8 +58,7 @@ router.get('/recent/:id/answers', (req, res)=>{
      console.log('recent question id:'+questionId);
         (async () => {
                 const { rows } = await pool.query("SELECT * FROM answers where linked_question_id = '"+questionId+"' ");
-                if (rows.length < 1 || rows.length === undefined) {
-                    console.log('no answer yet');
+                if (rows.length < 1 || typeof rows.length === undefined) {
                  questionAnswers = 'no answer yet';
                 }else {  questionAnswers = rows[0]; }
     res.status(200).json({
@@ -105,9 +104,9 @@ router.get('/:questionId', (req, res)=>{
         console.log(question);
         //console.log(question.length)
         if (rows.length < 1 || rows.length === undefined) {
-
-            send404(res);
-            console.log('the question does not exist');
+            const msg = 'the question does not exist';
+            send404(res, msg);
+            console.log(msg);
         }else {
             //retrieve answers if question exists
             console.log('the question exists, lets see if it has answers');
@@ -149,10 +148,12 @@ router.post('/', verifyToken, (req, res)=>{
     pool.query("INSERT INTO questions(user_id, question_title, question_body, created_at) VALUES('"+userId+"', '"+qTitle+"', '"+question+"', '"+timestamp+"');",(err,result)=>{
         if(err){
             console.log(err);
-            console.log('could not save question');
-            send400(res);
+            const msg = 'could not save question';
+            console.log(msg);
+            send400(res, msg);
         }else{
-        	send200(res);
+            const msg = 'question saved';
+        	send200(res, msg);
         }
         
     });
@@ -181,7 +182,8 @@ const questionId = req.body.question_id;
                 message:'cant delete, the question does not exist'
             });
         }
-        send200(res);
+        const msg = 'question deleted';
+        send200(res, msg);
     });
 });
 
@@ -209,18 +211,20 @@ router.post('/answers', verifyToken, (req, res)=>{
         console.log(question);
         //console.log(question.length)
         if (rows.length < 1 || rows.length === undefined) {
-
-            send404(res);
-            console.log('the question does not exist');
+            const msg = 'the question does not exist';
+            send404(res, msg);
+            console.log(msg);
         }else {
             //save the answer if question exists
             console.log('the question exists, lets save your answer');
             pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text, created_at) VALUES('"+userId+"', '"+questionId+"', '"+answer+"', '"+timestamp+"');", [],(err,result)=>{
                 if(err){
                     console.log(err);
-                    send400(res);
+                    const msg = 'failed to save, try later';
+                    send400(res, msg);
                 }
-                send200(res);
+                const msg = 'saved';
+                send200(res, msg);
             });
         }
 
@@ -252,8 +256,9 @@ router.put('/answers/:answerId', verifyToken, (req, res)=>{
     pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ", [],(err,result)=>{
         if(err){
             console.log(err);
-            console.log('could not find the question');
-            send404(res);
+            const msg = 'could not find the question';
+            console.log(msg);
+            send404(res, msg);
         }else {
             console.log(result);
             //mark answer as accepted
@@ -262,10 +267,12 @@ router.put('/answers/:answerId', verifyToken, (req, res)=>{
                     if(err) {
                         console.log(err);
                         console.log('action failed');
-                       send404(res);
+                        const msg = 'could not find that answer';
+                       send404(res, msg);
                     }else {
                         console.log('action completed');
-                        send200(res);
+                        const msg = 'succesful';
+                        send200(res, msg);
                     }
                 }); //end function to mark answer as selected
 

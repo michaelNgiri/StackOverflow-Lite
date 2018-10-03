@@ -49,7 +49,7 @@ router.post('/upvote/:answerId', verifyToken, (req, res)=>{
 */
 //downvoting of answers
 router.post('/downvote/:answerId', verifyToken, (req, res)=>{
-    send400(res);
+    //send400(res);
     const table = 'downvotes';
     const userId = req.body.user_id;
     const answerId = req.body.answer_id;
@@ -67,8 +67,9 @@ function vote(res, queryString) {
         if(err) {
             send400(res);
         }else {
-            console.log('action completed');
-            send200(res);
+            const msg = 'action completed';
+            console.log(msg);
+            send200(res, msg);
         }
     });
 
