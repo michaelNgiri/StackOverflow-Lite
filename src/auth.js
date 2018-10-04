@@ -10,14 +10,12 @@ const userInfoIsValid = require('../middlewares/verifyUserInfo');
 const cors = require('cors');
 router.use(cors());
 
-
 const send400= require('../helpers/400response');
 const send200= require('../helpers/200response');
 const send401= require('../helpers/401response');
 const send503= require('../helpers/503response');
 
 const Pool = require('pg').Pool;
-
 const pool = new Pool(config);
 
  /*
@@ -36,7 +34,7 @@ router.post('/login', function (req, res) {
         if (err || result === undefined) send503(res, "Temporarily out of service, try logging in again later");
 
         if (result.rows.length < 1) send401(res, "this email is not registered");
-        
+
         (async () => {
             const { rows } = await pool.query("SELECT * FROM users WHERE email = '"+email+"' ");
             const dbPassword = rows[0].password;
@@ -57,10 +55,9 @@ router.post('/login', function (req, res) {
             jwt.sign({user}, 'secret_key',{expiresIn:'30000s'}, (err, token)=>{
                 //set cookies
                 const authToken = token;
-                
+
                 //signed:true,secure:secureCookie
                 res.cookie( 'Authorization',authToken, 'id', id, {httpOny:true});
-                
                 // res.headers({Authorization:token, id:id});
                 res.status(200).json({
                     status:200,
