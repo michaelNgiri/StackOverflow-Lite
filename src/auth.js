@@ -10,7 +10,6 @@ const userInfoIsValid = require('../middlewares/verifyUserInfo');
 const cors = require('cors');
 router.use(cors());
 
-
 const send400= require('../helpers/400response');
 const send200= require('../helpers/200response');
 const send401= require('../helpers/401response');
@@ -18,10 +17,7 @@ const send503= require('../helpers/503response');
 const message= require('../helpers/messageForAuth')
 
 const Pool = require('pg').Pool;
-
-
 const pool = new Pool(config);
-
 
  /*
  * @oas [get] /api/v1/auth/login
@@ -106,11 +102,10 @@ router.post('/signup', async (req, res) => {
             const result = await pool.query("SELECT * FROM users WHERE email = '" + email + "' ", [])
 
             if(result.rows.length<1 || result.rows.length === undefined){
-                const hashedPassword = await bcrypt.hash(password, 8)
-
+                const hashedPassword = await bcrypt.hash(password, 8);
                 //insert the user to database if not already registered
-                const insertQuery = "INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');"
-                const queryResult = await pool.query(insertQuery)
+                const insertQuery = "INSERT INTO users(first_name, last_name, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"');";
+                const queryResult = await pool.query(insertQuery);
                 send200(res, message.registrationSuccess);
             }else {
                 //give a feedback to the user if email is already in use
@@ -122,7 +117,7 @@ router.post('/signup', async (req, res) => {
         }
     }
     catch(err) {
-        console.log(err)
+        console.log(err);
         send400(res, message.userNotExist);
     }
 });
