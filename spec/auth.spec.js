@@ -1,9 +1,16 @@
 const Request = require('request');
+require('dotenv').config();
+let url;
+if (process.env.APP_ENV === 'local'){
+    url = process.env.LOCAL_SERVER
+}else{
+    url = process.env.SITE_URL;
+}
 
         describe("User Registration Form", ()=>{
             let data = {};
             beforeAll((done)=>{
-                Request.post({url:'http://localhost:3000/api/v1/auth/signup', form: {email:'email@email.com', password:"password"}}, function(err,httpResponse,body){
+                Request.post({url:url+'/api/v1/auth/signup', form: {email:'email@email.com', password:"password"}}, function(err,httpResponse,body){
                     console.log(httpResponse['statusCode']);
                     data.status = httpResponse['statusCode'];
                     done();
@@ -37,7 +44,7 @@ const Request = require('request');
 describe("User Registration Form", ()=>{
     let data = {};
     beforeAll((done)=>{
-        Request.post({url:'http://localhost:3000/api/v1/auth/signup', form: {email:'email@email.com', password:""}}, function(err,httpResponse,body){
+        Request.post({url:url+'/api/v1/auth/signup', form: {email:'email@email.com', password:""}}, function(err,httpResponse,body){
             console.log(httpResponse['statusCode']);
             data.status = httpResponse['statusCode'];
             done();
@@ -52,7 +59,7 @@ describe("User Registration Form", ()=>{
 describe("User Registration Form", ()=>{
     let data = {};
     beforeAll((done)=>{
-        Request.post({url:'http://localhost:3000/api/v1/auth/signup', form: {email:'email@email.com', password:""}}, function(err,httpResponse,body){
+        Request.post({url:url+'/api/v1/auth/signup', form: {email:'email@email.com', password:""}}, function(err,httpResponse,body){
             console.log(httpResponse['statusCode']);
             data.status = httpResponse['statusCode'];
             done();
@@ -69,7 +76,7 @@ describe("User Registration Form", ()=>{
 describe("Login Form", ()=>{
     let data = {};
     beforeAll((done)=>{
-        Request.post({url:'http://localhost:3000/api/v1/auth/login', form: {email:'email@email.com', password:"password"}}, function(err,httpResponse,body){
+        Request.post({url:url+'/api/v1/auth/login', form: {email:'email@email.com', password:"password"}}, function(err,httpResponse,body){
             console.log(httpResponse['statusCode']);
             data.status = httpResponse['statusCode'];
             done();
@@ -85,7 +92,7 @@ describe("Login Form", ()=>{
 describe("User Login", ()=>{
     let data = {};
     beforeAll((done)=>{
-        Request.post({url:'http://localhost:3000/api/v1/auth/login', form: {email:'email@x.com', password:""}}, function(err,httpResponse,body){
+        Request.post({url:url+'/api/v1/auth/login', form: {email:'email@x.com', password:""}}, function(err,httpResponse,body){
             console.log(httpResponse['statusCode']);
             data.status = httpResponse['statusCode'];
             done();
