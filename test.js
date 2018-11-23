@@ -7,6 +7,8 @@ var config = {
 };
 
 var pool = new Pool(config);
+
+//Function for setting up respective tables for the database by executing queries
 async function setut_database(){
 	//var response = await pool.query("select * from users");
 	pool.query("CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, name TEXT, link TEXT, email TEXT);");

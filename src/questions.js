@@ -27,11 +27,14 @@ const pool = new Pool(config);
  *   - (query result) several
 */
 //Fetch all questions 
-router.get('/', (req, res)=>{
-    (async () => {
+router.get('/', async (req, res)=>{
+    try {
         const { rows } = await pool.query("SELECT * FROM questions");
         res.status(200).json(rows);
-    })();
+    }
+    catch(err) {
+        res.status(504).json('Something went wrong, Try Again later');
+    }
 });
 
 /*
@@ -42,42 +45,47 @@ router.get('/', (req, res)=>{
  *   - (query recult) 1
 */
 //get the most recent question
-router.get('/recent', (req, res)=>{
-    (async () => { 
-    	console.log('fetching the latest question');
+router.get('/recent', async (req, res)=>{
+    try{
         const { rows } = await pool.query("select * from questions where id != 0 order by created_at desc limit 1");
-        console.log(rows);
         res.status(200).json(rows);
-    })();
+    }
+    catch(err) {
+        res.status(504).json('Something went wrong, Try Again later');
+    }
 });
 
 
 //get the most recent question answers
-router.get('/recent/:id/answers', (req, res)=>{
-    const questionId = req.params.id;
-     console.log('recent question id:'+questionId);
-        (async () => {
-                const { rows } = await pool.query("SELECT * FROM answers where linked_question_id = '"+questionId+"' ");
-                if (rows.length < 1 || typeof rows.length === undefined) {
-                 questionAnswers = 'no answer yet';
-                }else {  questionAnswers = rows[0]; }
-    res.status(200).json({
-               status:200, answers:questionAnswers
-           });
-     })();
+router.get('/recent/:id/answers', async (req, res)=>{
+    try{
+        const questionId = req.params.id;
+        const { rows } = await pool.query("SELECT * FROM answers where linked_question_id = '"+questionId+"' ");
+        if (rows.length < 1 || typeof rows.length === undefined) {
+            questionAnswers = 'no answer yet';
+        }else { 
+            questionAnswers = rows[0];
+        }
+        res.status(200).json({
+           status:200, answers:questionAnswers
+        });
+    }
+    catch(err) {
+        res.status(504).json('Something went wrong, Try Again later');
+    }
 });
 
 
-
-router.get('question/owner/:ownerId', (req, res)=>{
-    const userId = req.params.userId;
-    (async () => {
-        console.log('fetching the latest question');
+//Gets the information of the user that made a question (first name, last name, email) using its userID
+router.get('question/owner/:ownerId', async (req, res)=>{
+    try{
+        const userId = req.params.userId;
         const { rows } = await pool.query("select first_name, last_name, email from users where id = '"+userId+"' ");
-        console.log('the question was asked by'+rows);
-        console.log(rows);
         res.status(200).json(rows);
-    })();
+    }
+    catch(err) {
+        res.status(504).json('Something went wrong, Try Again later');
+    }
 });
 
 
@@ -93,37 +101,33 @@ router.get('question/owner/:ownerId', (req, res)=>{
 */
 //Fetch a specific  question 
 //This should come with all the  answers  provided so far for the question. 
-router.get('/:questionId', (req, res)=>{
+router.get('/:questionId', async (req, res)=>{
     //const questionId = req.body.questionId
-    let questionAnswers = [];
-   const questionId=req.body.question_id;
-    (async () => {
+    try {
+        let questionAnswers = [];
+        const questionId=req.body.question_id;
         //check if the question with that id exists in database
         const { rows } = await pool.query("SELECT * FROM questions where id = '"+questionId+"' ");
         const question = rows[0];
-        console.log(question);
-        //console.log(question.length)
         if (rows.length < 1 || rows.length === undefined) {
             const msg = 'the question does not exist';
             send404(res, msg);
-            console.log(msg);
         }else {
             //retrieve answers if question exists
-            console.log('the question exists, lets see if it has answers');
-            (async () => {
-                const { rows } = await pool.query("SELECT * FROM answers where linked_question_id = '"+questionId+"' ");
-
-                if (rows.length < 1 || rows.length === undefined) {
-                    console.log('no answer yet');
-                 questionAnswers = 'no answer yet';
-                }else {  questionAnswers = rows[0]; }
-                res.status(200).json({
-                    status:200, question:question, answers:questionAnswers
-                });
-            })();
+            const { rows } = await pool.query("SELECT * FROM answers where linked_question_id = '"+questionId+"' ");
+            if (rows.length < 1 || rows.length === undefined) {
+                questionAnswers = 'no answer yet';
+            }else {
+                questionAnswers = rows[0];
+            }
+            res.status(200).json({
+                status:200, question:question, answers:questionAnswers
+            });
         }
-
-    })();
+    }
+    catch(err) {
+        res.status(504).json('Something went wrong, Try Again later');
+    }
 });
 
 /*
@@ -137,26 +141,23 @@ router.get('/:questionId', (req, res)=>{
      - (user id) id of the user attempting this action
 */
 //Post a question 
-router.post('/', verifyToken, (req, res)=>{
-	console.log('request received, lets try and save your question');
-    const qTitle = req.body.question_title;
-    const question = req.body.question;
-    const userId = req.body.id;
-    const timestamp =  new Date().toLocaleString();
-    console.log(req.body);
-
-    pool.query("INSERT INTO questions(user_id, question_title, question_body, created_at) VALUES('"+userId+"', '"+qTitle+"', '"+question+"', '"+timestamp+"');",(err,result)=>{
-        if(err){
-            console.log(err);
-            const msg = 'could not save question';
-            console.log(msg);
-            send400(res, msg);
-        }else{
-            const msg = 'question saved';
-        	send200(res, msg);
-        }
+router.post('/', verifyToken, async (req, res)=>{
+    try {
+        // request received, lets try and save your question'
+        const qTitle = req.body.question_title;
+        const question = req.body.question;
+        const userId = req.body.id;
+        const timestamp =  new Date().toLocaleString();
         
-    });
+        const result = await pool.query("INSERT INTO questions(user_id, question_title, question_body, created_at) VALUES('"+userId+"', '"+qTitle+"', '"+question+"', '"+timestamp+"');");
+        const msg = 'question saved';
+        send200(res, msg);
+    }
+	catch(err){
+        console.log(err);
+        const msg = 'could not save question';
+        send400(res, msg);
+    }
 
 });
 
@@ -172,19 +173,20 @@ router.post('/', verifyToken, (req, res)=>{
 
 //Delete a question
 //This endpoint should be available to  the author of the question. 
-router.delete('/:questionId', verifyToken, (req, res)=>{
-const questionId = req.body.question_id;
-    pool.query("DELETE FROM questions where id = '"+questionId+"' ", [],(err,result)=>{
-        if(err){
-            console.log(err);
-            res.status(400).json({
-                status:400,
-                message:'cant delete, the question does not exist'
-            });
-        }
+router.delete('/:questionId', verifyToken, async (req, res) => {
+    try {
+        const questionId = req.body.question_id;
+        const result = await pool.query("DELETE FROM questions where id = '"+questionId+"' ", [])
         const msg = 'question deleted';
         send200(res, msg);
-    });
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).json({
+            status:400,
+            message:'cant delete, the question does not exist'
+        });
+    }
 });
 
 
@@ -199,36 +201,31 @@ const questionId = req.body.question_id;
 */
 
 //Post an answer to  a question
-router.post('/answers', verifyToken, (req, res)=>{
-    const questionId = req.body.question_id;
-    const answer = req.body.answer;
-    const userId = req.body.user_id;
-    const timestamp =  new Date().toLocaleString();
-    (async () => {
+router.post('/answers', verifyToken, async (req, res)=>{
+    try {
+        const questionId = req.body.question_id;
+        const answer = req.body.answer;
+        const userId = req.body.user_id;
+        const timestamp =  new Date().toLocaleString();
         //check if the question with that id exists in database before saving an answer to it
         const { rows } = await pool.query("SELECT * FROM questions where id = '"+questionId+"' ");
         const question = rows[0];
-        console.log(question);
         //console.log(question.length)
         if (rows.length < 1 || rows.length === undefined) {
             const msg = 'the question does not exist';
             send404(res, msg);
-            console.log(msg);
         }else {
             //save the answer if question exists
-            console.log('the question exists, lets save your answer');
-            pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text, created_at) VALUES('"+userId+"', '"+questionId+"', '"+answer+"', '"+timestamp+"');", [],(err,result)=>{
-                if(err){
-                    console.log(err);
-                    const msg = 'failed to save, try later';
-                    send400(res, msg);
-                }
-                const msg = 'saved';
-                send200(res, msg);
-            });
+            const result = await pool.query("INSERT INTO answers(user_id, linked_question_id, answer_text, created_at) VALUES('"+userId+"', '"+questionId+"', '"+answer+"', '"+timestamp+"');", []);
+            const msg = 'saved';
+            send200(res, msg);
         }
-
-    })();
+    }
+    catch(err) {
+        console.log(err);
+        const msg = 'failed to save, try later';
+        send400(res, msg);
+    }
 });
 
 
@@ -247,44 +244,29 @@ router.post('/answers', verifyToken, (req, res)=>{
 //This endpoint is available to  only the answer author and question 
 // author. The answer author calls the  route to
 // update answer while the  question author calls the route to  accept answer.
-router.put('/answers/:answerId', verifyToken, (req, res)=>{
-    const questionId = req.body.question_id;
-    const answerId = req.body.answer_id;
-    const userId = req.body.user_id;
-    const time =  new Date().toLocaleString();
-    console.log('lets check for the requested question');
-    pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ", [],(err,result)=>{
-        if(err){
-            console.log(err);
-            const msg = 'could not find the question';
-            console.log(msg);
-            send404(res, msg);
-        }else {
-            console.log(result);
+router.put('/answers/:answerId', verifyToken, async (req, res)=>{
+    try {
+        const questionId = req.body.question_id;
+        const answerId = req.body.answer_id;
+        const userId = req.body.user_id;
+        const time =  new Date().toLocaleString();
+        //lets check for the requested question
+        const result = await pool.query("SELECT user_id FROM questions where id = '"+questionId+"' ", []);
             //mark answer as accepted
-            if(result['rows'][0]['user_id'] === userId){
-                pool.query("UPDATE answers SET selected_at = '"+time+"' where id = '"+answerId+"' ", [], (err,result)=>{
-                    if(err) {
-                        console.log(err);
-                        console.log('action failed');
-                        const msg = 'could not find that answer';
-                       send404(res, msg);
-                    }else {
-                        console.log('action completed');
-                        const msg = 'succesful';
-                        send200(res, msg);
-                    }
-                }); //end function to mark answer as selected
-
-                console.log(result['rows'][0]['user_id']);
-
-            }else {
-                res.status(401).send('access denied');
-            }
-
+        if(result['rows'][0]['user_id'] === userId){
+            const updateQueryresult = await pool.query("UPDATE answers SET selected_at = '"+time+"' where id = '"+answerId+"' ", [])
+             //end function to mark answer as selected
+            const msg = 'succesful';
+            send200(res, msg);
+        }else {
+            res.status(401).send('access denied');
         }
-    });
-
+    }
+    catch(err) {
+        console.log(err);
+        const msg = 'could not find the question';
+        send404(res, msg);
+    }
 });
 
 
