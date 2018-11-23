@@ -30,6 +30,7 @@ const pool = new Pool(config);
  *   - (email) The email used to register
  *   - (pasword) returns user info including token, user id, email, cookie
 */
+
 router.post('/login', async (req, res) => {
     try {
         const email = req.body.email;

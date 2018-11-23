@@ -1,14 +1,13 @@
 const jwt = require('jsonwebtoken');
 
 //token verification middleware 
-//checks if the client has the request token which would prove that the client is logged in
+//checks if the client has the request token which would prove that the client is logged in to the api
 //in case the request token is missing or wrong, the user will be denied access and 401 helper is called
 function  verifyToken(req, res, next) {
     //get request headers
     const requestHeader = req.body.Authorization || req.headers['authorization'];
     //check if header has the request token
     if(requestHeader !== undefined){
-        
         //get  the token
         req.token = requestHeader;
         jwt.verify(req.token, 'secret_key', (err, user)=>{
@@ -24,7 +23,6 @@ function  verifyToken(req, res, next) {
                 next();
             }
         });
-
     }else {
         //restrict access if token is absent
         res.status(403).send('you are not allowed to access this url');
