@@ -14,5 +14,4 @@ function userInfoIsValid(user){
     console.log(user);
     return false;
 }
-
 module.exports = userInfoIsValid;

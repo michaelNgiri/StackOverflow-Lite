@@ -31,7 +31,7 @@ const pool = new Pool(config);
 */
 router.post('/login', function (req, res) {
     const email = req.body.email;
-    console.log(email);
+    // console.log(email);
     if (userInfoIsValid(req.body)) {
         pool.query("SELECT password FROM users WHERE email = '"+email+"' ", [], function (err, result) {
             if (err || result === undefined) {
